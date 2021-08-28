@@ -1,16 +1,19 @@
-const handler = new (require('../../ServiceHandler'))();
+const { ServiceHandler } = require('../../index');
+const handler = new ServiceHandler();
 
 async function init(service_log) {
-    service_log.info(this.config)
+    service_log.info({ home_handler_config: this.config })
 }
 const hi = async (request, reply) => {
-    reply.send("hi")
+    const name = request.params != null && request.params.name != null ? request.params.name : null;
+    reply.send(`hi${name != null ? ` ${name}` : ""}`)
 }
 function close(service_log) {
     service_log.info(`close home hanlder`)
 }
 
 handler.hi = hi;
+handler.hiUser = hi;
 handler.initHandler = init;
-handler.closeHanler = close;
+handler.closeHandler = close;
 module.exports = handler;

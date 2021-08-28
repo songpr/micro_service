@@ -102,10 +102,12 @@
         "LogLevel": {
             "type": "string",
             "enum": [
+                "trace",
                 "debug",
                 "info",
                 "warn",
-                "error"
+                "error",
+                "fatal"
             ]
         },
         "Logger": {
@@ -113,13 +115,7 @@
             "additionalProperties": false,
             "properties": {
                 "level": {
-                    "type": "string",
-                    "enum": [
-                        "debug",
-                        "info",
-                        "warn",
-                        "error"
-                    ]
+                   "$ref":"#/definitions/LogLevel"
                 }
             },
             "required": [

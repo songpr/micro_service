@@ -1,6 +1,6 @@
 const util = require("util");
 class NodeServiceHandler {
-    async init(config, service_log) {
+    async init(service_handler_config, service_log) {
         //make sure init of the same instance will be called only once
         if (this.isInit === true) {
             return;
@@ -8,9 +8,10 @@ class NodeServiceHandler {
         else {
             const init = true;
             Object.defineProperty(this, 'isInit', { get: () => init, enumerable: true });
+            Object.defineProperty(this, 'config', { get: () => service_handler_config, enumerable: true });
         }
-        if (this.initHanlder != null) {
-            const initResult = util.types.isAsyncFunction(this.initHanlder) ? await this.initHanlder(service_log) : this.initHanlder(service_log);
+        if (this.initHandler != null) {
+            const initResult = util.types.isAsyncFunction(this.initHandler) ? await this.initHandler(service_log) : this.initHandler(service_log);
         }
     }
     async close(service_log) {
@@ -22,8 +23,8 @@ class NodeServiceHandler {
             const close = true;
             Object.defineProperty(this, 'isClose', { get: () => close, enumerable: true });
         }
-        if (this.closeHanlder != null) {
-            const closeResult = util.types.isAsyncFunction(this.closeHanlder) ? await this.closeHanlder(service_log) : this.closeHanlder(service_log);
+        if (this.closeHandler != null) {
+            const closeResult = util.types.isAsyncFunction(this.closeHandler) ? await this.closeHandler(service_log) : this.closeHandler(service_log);
         }
     }
 }

@@ -138,10 +138,12 @@
                 "level": {
                     "type": "string",
                     "enum": [
+                        "trace",
                         "debug",
                         "info",
                         "warn",
-                        "error"
+                        "error",
+                        "fatal"
                     ]
                 }
             },
