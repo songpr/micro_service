@@ -9,6 +9,10 @@ const nodeServiceOptionsSchema = require("./service-schema.json")
 const nodeServiceOptionsSchemaValidate = ajv.compile(nodeServiceOptionsSchema);
 const path = require("path");
 const activeNodes = new Set();
+function clone(object) {
+    return JSON.parse(JSON.stringify(object));
+
+}
 class MicroServiceNode {
     constructor(config_object, baseDir) {
         const valid = nodeOptionsSchemaValidate(config_object)
@@ -33,6 +37,21 @@ class MicroServiceNode {
             const servicePath = path.dirname(require.resolve(baseDir + config.services[serviceName].config));
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
+        const authentication_config = {};
+        if (config.authentication != null) {
+            for (const authType of Object.keys(config.authentication)) {
+                switch (authType) {
+                    case "bearer":
+
+                        const bearerAuthPlugin = require('fastify-bearer-auth');
+                        //register to root fastify
+                        const bearer_config = clone(config.authentication[authType]);
+                        authentication_config.bearer = bearer_config;
+                        break;
+                }
+            }
+        }
+        Object.defineProperty(this, 'authentication_config', { get: () => authentication_config, enumerable: false });
         Object.defineProperty(this, 'baseDir', { get: () => baseDir, enumerable: true });
         Object.defineProperty(this, 'name', { get: () => config.node.name, enumerable: true });
         log.info(`Load node options successfully.`);
@@ -40,7 +59,7 @@ class MicroServiceNode {
     async start() {
         // start all service
         for (const service of this.services) {
-            await service.start(this.fastify)
+            await service.start(this.fastify, this.authentication_config)
         }
         await this.fastify.listen(this.config.node.port, this.config.node.address);
         activeNodes.add(this);// add after start successfully
@@ -81,19 +100,23 @@ class NodeService {
         Object.defineProperty(this, 'path', { get: () => path, enumerable: true });
 
     }
-    async start(fastify) {
+    async start(fastify, node_authentication_config) {
         fastify.register(async (fastifyServiceContext) => {
-            //register plugins of this service
-            // if (this.config.service.cache != null) {
-            //     const fastifyCaching = require("fastify-caching");
-            //     if ((this.config.service.cache.privacy != null) && (Object.values(fastifyCaching.privacy).indexOf(this.config.service.cache.privacy) < 0)) {
-            //         throw new Error(`invalid cache privacy value in service this.config of ${service}`)
-            //     }
-            //     fastifyServiceContext.register(
-            //         fastifyCaching,
-            //         this.config.service.cache)
-            // }
             const service_handler_config = JSON.parse(JSON.stringify(this.config)); //copy config
+            //merge both
+            const authentication_config = { ...(node_authentication_config != null ? node_authentication_config : {}), ...service_handler_config.service.authentication != null ? service_handler_config.service.authentication : {} };
+            for (const authType of Object.keys(authentication_config)) {
+                switch (authType) {
+                    case "bearer":
+                        const bearerAuthPlugin = require('fastify-bearer-auth');
+                        //register to root fastify
+                        const bearer_config = authentication_config[authType];
+                        //bearer_config["addHook"] = false; //so can be override by service
+                        fastify.register(bearerAuthPlugin, bearer_config);
+                        break;
+                }
+            }
+
             delete service_handler_config.service;//remove service config since it use for service only
             Object.freeze(service_handler_config);// freeze config
             for (const orgRoute of this.config.service.routes) {

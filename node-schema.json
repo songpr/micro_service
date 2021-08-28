@@ -65,7 +65,7 @@
         },
         "BearerAuth": {
             "type": "object",
-            "additionalProperties": false,
+            "additionalProperties": true,
             "properties": {
                 "keys": {
                     "type": "array",

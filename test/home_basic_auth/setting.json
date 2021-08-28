@@ -1,0 +1,35 @@
+{
+    "service": {
+        "baseURL": "home_basic_auth",
+        "routes": [
+            {
+                "method": "GET",
+                "url": "/",
+                "handler": {
+                    "file": "home_handler.js",
+                    "function": "hi"
+                },
+                "logLevel": "debug"
+            },
+            {
+                "method": "GET",
+                "url": "/:name",
+                "handler": {
+                    "file": "home_handler.js",
+                    "function": "hiUser"
+                },
+                "logLevel": "debug"
+            }
+        ],
+        "authentication": {
+            "bearer": {
+                "keys": [
+                    "BdqXeK2XfGCnY4WGPkMnfiLmX4psnWxKHXJPqyUeBnrKNNAtJU4u4r8qwqCmFb3T"
+                ]
+            }
+        },
+        "logger": {
+            "level": "debug"
+        }
+    }
+}

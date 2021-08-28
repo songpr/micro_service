@@ -32,6 +32,9 @@
                 },
                 "logger": {
                     "$ref": "#/definitions/Logger"
+                },
+                "authentication": {
+                    "$ref": "#/definitions/NodeOptionsAuthentication"
                 }
             },
             "required": [
@@ -110,12 +113,41 @@
                 "fatal"
             ]
         },
+        "NodeOptionsAuthentication": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bearer": {
+                    "$ref": "#/definitions/BearerAuth"
+                }
+            },
+            "required": [
+                "bearer"
+            ],
+            "title": "NodeOptionsAuthentication"
+        },
+        "BearerAuth": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "keys": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "keys"
+            ],
+            "title": "Bearer"
+        },
         "Logger": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "level": {
-                   "$ref":"#/definitions/LogLevel"
+                    "$ref": "#/definitions/LogLevel"
                 }
             },
             "required": [
