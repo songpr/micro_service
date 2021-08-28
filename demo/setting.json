@@ -9,17 +9,7 @@
     "services": {
         "home": {
             "note": "the service note",
-            "config": "/marketing/users/setting.json",
-            "url": "http://localhost",
-            "authentication": {
-                "bearer": {
-                    "key": "${services_primary_auth_key}"
-                }
-            },
-            "active": true
-        },
-        "login": {
-            "config": "/marketing/users/setting.json",
+            "config": "/home/setting.json",
             "url": "http://localhost",
             "authentication": {
                 "bearer": {

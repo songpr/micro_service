@@ -1,13 +1,14 @@
 const setting = require("./setting.json");
-const msNode = require("../index")(setting);
+const { mserviceNode } = require("../index");
 
 const start = async () => {
-    await msNode.start();
+    const msnode = mserviceNode(setting,__dirname);
+    await msnode.start();
 }
 start()
-.then(()=>{
-    console.log("start sucessfully");
-})
-.catch(err=>{
-    console.log(`error:${err.message}\nstack:${err.stack}`);
-})
+    .then(() => {
+        console.log("start sucessfully");
+    })
+    .catch(err => {
+        console.log(`error:${err.message}\nstack:${err.stack}`);
+    });
