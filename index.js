@@ -28,9 +28,10 @@ class MicroServiceNode {
             if (config.services[serviceName].active !== true) continue; //ignore in active service
             const serviceconfig = require(baseDir + config.services[serviceName].config);
             const servicePath = path.dirname(require.resolve(baseDir + config.services[serviceName].config));
-            services.add(new NodeService(serviceName, serviceconfig, fastify, servicePath));
+            services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
         Object.defineProperty(this, 'baseDir', { get: () => baseDir, enumerable: true });
+        Object.defineProperty(this, 'name', { get: () => config.node.name, enumerable: true });
         log.info(`Load node options successfully.`);
     }
     async start() {
@@ -44,6 +45,7 @@ class MicroServiceNode {
     }
 
     async close() {
+        this.log.info(`closing '${this.name}' node and it's services.`)
         const serviceClosePromises = [];
         for (const service of this.services) {
             serviceClosePromises.push(service.close())
@@ -53,7 +55,7 @@ class MicroServiceNode {
 }
 class NodeService {
     constructor(serviceName, config_object, servicePath) {
-        const valid = nodeServiceOptionsSchemaValidate(this.config_object)
+        const valid = nodeServiceOptionsSchemaValidate(config_object)
         if (!valid) throw new Error(
             `Invalid node-service '${serviceName}' options:\n\t${nodeServiceOptionsSchemaValidate.errors.map(schemaError => {
                 return `error at: ${schemaError.instancePath}\n\terror: ${schemaError.message}`
@@ -66,8 +68,10 @@ class NodeService {
         Object.defineProperty(this, 'log', { get: () => log, enumerable: true });
         const _handlers = new Set();
         Object.defineProperty(this, '_handlers', { get: () => _handlers, enumerable: false });
-        Object.defineProperty(this, 'name', { get: () => serviceName, enumerable: true });
-        Object.defineProperty(this, 'servicePath', { get: () => servicePath, enumerable: true });
+        const name = serviceName;
+        Object.defineProperty(this, 'name', { get: () => name, enumerable: true });
+        const path = servicePath;
+        Object.defineProperty(this, 'path', { get: () => path, enumerable: true });
 
     }
     async start(fastify) {
@@ -89,8 +93,8 @@ class NodeService {
                 route.url = "/" + this.config.service.baseURL + route.url
 
                 const funcName = route.handler.function;
-                const obj_handler = require(this.servicePath + "/" + route.handler.file);
-                _handlers.add(obj_handler);
+                const obj_handler = require(this.path + "/" + route.handler.file);
+                this._handlers.add(obj_handler);
                 if (!obj_handler instanceof NodeServiceHandler) {
                     throw new Error(` ${this.name}'s handler must be instance of ServiceHandler`);
                 }
@@ -139,6 +143,7 @@ errorTypes.map(type => {
                 nodeClosePromises.push(node.close())
             }
             await Promise.all(nodeClosePromises);
+            console.log(`clean all nodes successfully`)
         } catch (_) {
             process.exit(1);
         } finally {
