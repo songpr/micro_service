@@ -124,11 +124,6 @@
                     "type": "integer"
                 }
             },
-            "required": [
-                "bodyLimit",
-                "http2",
-                "logger"
-            ],
             "title": "Options"
         },
         "Logger": {

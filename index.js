@@ -18,7 +18,7 @@ class MicroServiceNode {
             }).join("\n================================================================================")}\n\n`);
         const config = Object.freeze(config_object); //options can not change
         Object.defineProperty(this, 'config', { get: () => config });
-        const fastify = Fastify(config.fastify.options)
+        const fastify = Fastify(config.fastify != null ? config.fastify.options : null);
         Object.defineProperty(this, 'fastify', { get: () => fastify });
         const log = require('pino')({ level: config.logger.level, base: { pid: process.pid, mserice_node: "core" } });
         Object.defineProperty(this, 'log', { get: () => log, enumerable: true });
@@ -45,12 +45,13 @@ class MicroServiceNode {
     }
 
     async close() {
-        this.log.info(`closing '${this.name}' node and it's services.`)
+        this.log.info(`closing '${this.name}' node and it's services.`);
         const serviceClosePromises = [];
         for (const service of this.services) {
             serviceClosePromises.push(service.close())
         }
-        return Promise.all(serviceClosePromises);
+        await Promise.all(serviceClosePromises);
+        await this.fastify.close();//close fastify last
     }
 }
 class NodeService {
@@ -113,9 +114,9 @@ class NodeService {
         this.log.info(`closing '${this.name}' service and it's handlers.`)
         const handlerClosePromises = [];
         for (const handler of this._handlers) {
-            handlerClosePromises.push(handler.close())
+            handlerClosePromises.push(handler.close(this.log))
         }
-        return Promise.all(serviceClosePromises);
+        return Promise.all(handlerClosePromises);
     }
 }
 const NodeServiceHandler = require("./ServiceHandler");
@@ -173,10 +174,6 @@ module.exports = {
     mserviceNode:
         (options, baseDir) => {
             return new MicroServiceNode(options, baseDir)
-        },
-    nodeService:
-        (service_options) => {
-            return new NodeService(service_options);
         },
     ServiceHandler: NodeServiceHandler
 };
