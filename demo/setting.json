@@ -1,0 +1,162 @@
+{
+    "node": {
+        "name": "demo node",
+        "host": "localhost",
+        "listen": "0.0.0.0",
+        "port": 3000
+    },
+    "services_note": "each property of services are a service configuration, property name is the service name. <service>.active use to make the service active in this node or not",
+    "services": {
+        "home": {
+            "note": "the service note",
+            "config": "/marketing/users/setting.json",
+            "url": "http://localhost",
+            "authentication": {
+                "bearer": {
+                    "key": "${services_primary_auth_key}"
+                }
+            },
+            "active": true
+        },
+        "login": {
+            "config": "/marketing/users/setting.json",
+            "url": "http://localhost",
+            "authentication": {
+                "bearer": {
+                    "key": "${services_primary_auth_key}"
+                }
+            },
+            "active": true
+        }
+    },
+    "authentication_note": "node authentication, each property is a auth method order by setting. auth can be overrided by service authentication",
+    "authentication": {
+        "bearer": {
+            "keys": [
+                "${services_primary_auth_key}",
+                "${services_secondary_auth_key}",
+                "${services_external_auth_key}",
+                "ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG"
+            ]
+        }
+    },
+    "fastify.options note": "specify fastify option here",
+    "fastify": {
+        "options": {
+            "http2": false,
+            "logger": {
+                "level": "info"
+            },
+            "bodyLimit": 10485760
+        }
+    },
+    "schema_note": "global schema for service config to reference",
+    "schema": {
+        "ids": {
+            "type": "string",
+            "pattern": "^\\d+(,\\d+){0,1000}$"
+        },
+        "eng_field_name": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-]*[a-zA-Z0-9]$"
+        },
+        "eng_field_name_pattern": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-]*[a-zA-Z0-9]$"
+        },
+        "thai-eng_field_name": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_\\-]*[a-zA-Z0-9ก-๙]$"
+        },
+        "thai-eng_field_name_pattern": {
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_\\-]*[a-zA-Z0-9ก-๙]$"
+        },
+        "thai-eng_name": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9 _\\-]+$"
+        },
+        "thai-eng_value": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_\\-]+$"
+        },
+        "thai-eng_search": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไ๑-๙a-zA-Z0-9_\\-!\\@][ก-๙a-zA-Z0-9_\\-!\\@]*$"
+        },
+        "thai-eng_json_value": {
+            "type": "string",
+            "pattern": "^[ก-๙a-zA-Z0-9&=_{}\\[\\],:%\\\"-]+$"
+        },
+        "datetime_string": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^([0-9]{4})-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9](:[0-5][0-9](\\.[0-9]{3})?)?$"
+                },
+                {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                {
+                    "type": "string",
+                    "format": "date"
+                }
+            ]
+        },
+        "period": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+                "$ref": "datetime_string#"
+            }
+        },
+        "user": {
+            "type": "object",
+            "propertyNames": {
+                "$ref": "eng_field_name_pattern#"
+            },
+            "properties": {
+                "name": {
+                    "$ref": "thai-eng_name#"
+                }
+            },
+            "patternProperties": {
+                "^is_": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1
+                },
+                "_date$": {
+                    "$ref": "datetime_string#"
+                },
+                "_datetime$": {
+                    "$ref": "datetime_string#"
+                },
+                "_at$": {
+                    "$ref": "datetime_string#"
+                },
+                "_time$": {
+                    "type": "string",
+                    "format": "time"
+                },
+                "_url$": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "_name$": {
+                    "$ref": "thai-eng_name#"
+                },
+                "_value$": {
+                    "$ref": "thai-eng_value#"
+                }
+            }
+        }
+    },
+    "logger_note": "pino log options for this node",
+    "logger": {
+        "level": "debug"
+    },
+    "database": {
+        "mysql": {}
+    }
+}

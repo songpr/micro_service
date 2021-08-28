@@ -22,7 +22,9 @@
   },
   "homepage": "https://github.com/songpr/micro_service#readme",
   "dependencies": {
-    "fastify": "^3.20.2"
+    "ajv": "^8.6.2",
+    "fastify": "^3.20.2",
+    "pino": "^6.13.1"
   },
   "devDependencies": {
     "jest": "^27.1.0"

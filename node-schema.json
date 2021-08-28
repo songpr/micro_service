@@ -1,0 +1,253 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "/schemas/mservice-node/options",
+    "$ref": "#/definitions/NodeOptions",
+    "definitions": {
+        "NodeOptions": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "node": {
+                    "$ref": "#/definitions/Node"
+                },
+                "services_note": {
+                    "type": "string"
+                },
+                "services": {
+                    "$ref": "#/definitions/Services"
+                },
+                "authentication_note": {
+                    "type": "string"
+                },
+                "authentication": {
+                    "$ref": "#/definitions/NodeOptionsAuthentication"
+                },
+                "fastify.options note": {
+                    "type": "string"
+                },
+                "fastify": {
+                    "$ref": "#/definitions/Fastify"
+                },
+                "schema_note": {
+                    "type": "string"
+                },
+                "schema": {
+                    "$ref": "#/definitions/Schema"
+                },
+                "logger_note": {
+                    "type": "string"
+                },
+                "logger": {
+                    "$ref": "#/definitions/Logger"
+                },
+                "database": {
+                    "$ref": "#/definitions/Database"
+                }
+            },
+            "required": [
+                "node",
+                "services"
+            ],
+            "title": "NodeOptions"
+        },
+        "NodeOptionsAuthentication": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "bearer": {
+                    "$ref": "#/definitions/BearerAuth"
+                }
+            },
+            "required": [
+                "bearer"
+            ],
+            "title": "NodeOptionsAuthentication"
+        },
+        "BearerAuth": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "keys": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "keys"
+            ],
+            "title": "Bearer"
+        },
+        "Database": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "mysql": {
+                    "$ref": "#/definitions/Mysql"
+                }
+            },
+            "required": [
+                "mysql"
+            ],
+            "title": "Database"
+        },
+        "Mysql": {
+            "type": "object",
+            "additionalProperties": false,
+            "title": "Mysql"
+        },
+        "Fastify": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "options": {
+                    "$ref": "#/definitions/Options"
+                }
+            },
+            "required": [
+                "options"
+            ],
+            "title": "Fastify"
+        },
+        "Options": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "http2": {
+                    "type": "boolean"
+                },
+                "logger": {
+                    "$ref": "#/definitions/Logger"
+                },
+                "bodyLimit": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "bodyLimit",
+                "http2",
+                "logger"
+            ],
+            "title": "Options"
+        },
+        "Logger": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "level": {
+                    "type": "string",
+                    "enum": [
+                        "debug",
+                        "info",
+                        "warn",
+                        "error"
+                    ]
+                }
+            },
+            "required": [
+                "level"
+            ],
+            "title": "Logger"
+        },
+        "Node": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/thai-eng_field_name"
+                },
+                "host": {
+                    "$ref": "#/definitions/hostname"
+                },
+                "listen": {
+                    "$ref": "#/definitions/ip4"
+                },
+                "port": {
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "host",
+                "listen",
+                "name",
+                "port"
+            ],
+            "title": "Node"
+        },
+        "Schema": {
+            "type": "object",
+            "title": "Schema"
+        },
+        "Services": {
+            "type": "object",
+            "patternProperties": {
+                "^.*": {
+                    "$ref": "#/definitions/Service"
+                }
+            },
+            "title": "Services"
+        },
+        "Service": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "note": {
+                    "type": "string"
+                },
+                "config": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                },
+                "authentication": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^.*": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/ServiceBearerAuthentication"
+                                }
+                            ]
+                        }
+                    }
+                },
+                "active": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "active",
+                "config",
+                "url"
+            ],
+            "title": "Service"
+        },
+        "ServiceBearerAuthentication": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "key": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "key"
+            ],
+            "title": "ServiceBearerAuthentication"
+        },
+        "thai-eng_field_name": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_ \\-]*[a-zA-Z0-9ก-๙]$"
+        },
+        "hostname": {
+            "type": "string",
+            "pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"
+        },
+        "ip4": {
+            "type": "string",
+            "pattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+        }
+    }
+}
