@@ -12,10 +12,13 @@ const activeNodes = new Set();
 class MicroServiceNode {
     constructor(config_object, baseDir) {
         const valid = nodeOptionsSchemaValidate(config_object)
-        if (!valid) throw new Error(
-            `Invalid mservice-node options:\n\t${nodeOptionsSchemaValidate.errors.map(schemaError => {
-                return `error at: ${schemaError.instancePath}\n\terror: ${schemaError.message}`
-            }).join("\n================================================================================")}\n\n`);
+        if (!valid) {
+            const errors = nodeOptionsSchemaValidate.errors
+            throw new Error(
+                `Invalid mservice-node options:\n\t${errors.map(schemaError => {
+                    return `error at: ${schemaError.instancePath}\n\terror: ${schemaError.message}`
+                }).join("\n================================================================================")}\n\n`);
+        }
         const config = Object.freeze(config_object); //options can not change
         Object.defineProperty(this, 'config', { get: () => config });
         const fastify = Fastify(config.fastify != null ? config.fastify.options : null);
@@ -26,7 +29,7 @@ class MicroServiceNode {
         Object.defineProperty(this, 'services', { get: () => services, enumerable: true });
         for (const serviceName of Object.keys(config.services)) {
             if (config.services[serviceName].active !== true) continue; //ignore in active service
-            const serviceconfig = require(baseDir + config.services[serviceName].config);
+            const serviceconfig = Object.freeze(require(baseDir + config.services[serviceName].config));
             const servicePath = path.dirname(require.resolve(baseDir + config.services[serviceName].config));
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
@@ -39,7 +42,7 @@ class MicroServiceNode {
         for (const service of this.services) {
             await service.start(this.fastify)
         }
-        await this.fastify.listen(3000);
+        await this.fastify.listen(this.config.node.port, this.config.node.address);
         activeNodes.add(this);// add after start successfully
         this.log.info(`Start node successfully.`);
     }
@@ -57,11 +60,14 @@ class MicroServiceNode {
 class NodeService {
     constructor(serviceName, config_object, servicePath) {
         const valid = nodeServiceOptionsSchemaValidate(config_object)
-        if (!valid) throw new Error(
-            `Invalid node-service '${serviceName}' options:\n\t${nodeServiceOptionsSchemaValidate.errors.map(schemaError => {
-                return `error at: ${schemaError.instancePath}\n\terror: ${schemaError.message}`
-            }).join("\n================================================================================")}\n\n`);
-        const config = Object.freeze(config_object); //options can not change
+        if (!valid) {
+            const errors = nodeServiceOptionsSchemaValidate.errors;
+            throw new Error(
+                `Invalid node-service '${serviceName}' options:\n\t${errors.map(schemaError => {
+                    return `error at: ${schemaError.instancePath}\n\terror: ${schemaError.message}`
+                }).join("\n================================================================================")}\n\n`);
+        }
+        const config = config_object;
         Object.defineProperty(this, 'config', { get: () => config });
         const log_base = { pid: process.pid };
         log_base[`${serviceName}_service`]
@@ -90,7 +96,8 @@ class NodeService {
             const service_handler_config = JSON.parse(JSON.stringify(this.config)); //copy config
             delete service_handler_config.service;//remove service config since it use for service only
             Object.freeze(service_handler_config);// freeze config
-            for (const route of this.config.service.routes) {
+            for (const orgRoute of this.config.service.routes) {
+                const route = JSON.parse(JSON.stringify(orgRoute));//copy since we gonna change it
                 route.url = "/" + this.config.service.baseURL + route.url
 
                 const funcName = route.handler.function;
