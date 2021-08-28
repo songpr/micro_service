@@ -9,6 +9,7 @@ const nodeServiceOptionsSchema = require("./service-schema.json")
 const nodeServiceOptionsSchemaValidate = ajv.compile(nodeServiceOptionsSchema);
 const path = require("path");
 const activeNodes = new Set();
+const handlerServiceMap = new Map();
 class MicroServiceNode {
     constructor(config_object, baseDir) {
         const valid = nodeOptionsSchemaValidate(config_object)
@@ -101,7 +102,8 @@ class NodeService {
                 route.url = "/" + this.config.service.baseURL + route.url
 
                 const funcName = route.handler.function;
-                const obj_handler = require(this.path + "/" + route.handler.file);
+                const hanlder_path = this.path + "/" + route.handler.file;
+                const obj_handler = require(hanlder_path);
                 this._handlers.add(obj_handler);
                 if (!obj_handler instanceof NodeServiceHandler) {
                     throw new Error(` ${this.name}'s handler must be instance of ServiceHandler`);

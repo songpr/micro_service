@@ -54,8 +54,8 @@ test("handler have only a instance event reference by multiple router, init only
     const config = clone(nodeConfig);
     config.services["Basic"] = basicService;
     const msnode = mserviceNode(config, __dirname);
-    activeNodes.add(msnode);
     await msnode.start();
+    activeNodes.add(msnode);
     const response = await client.get(`basic/`);
     expect(response.body).toEqual("hi");
     expect(msnode.services.size).toEqual(2);
