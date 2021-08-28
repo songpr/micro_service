@@ -7,7 +7,7 @@ const nodeConfig = {
         "port": 2000
     },
     "services": {
-        "home": {
+        "Home": {
             "note": "the service note",
             "config": "/home/setting.json",
             "url": "http://localhost",
@@ -24,6 +24,9 @@ const client = got.extend({
     prefixUrl: `http:${nodeConfig.node.host}:${nodeConfig.node.port}`
 })
 const activeNodes = new Set();
+function clone(config) {
+    return JSON.parse(JSON.stringify(config))
+}
 test("start a node with minimal config", async () => {
     const msnode = mserviceNode(nodeConfig, __dirname);
     activeNodes.add(msnode);
@@ -40,6 +43,28 @@ test("call unknown route", async () => {
         await client.get(`unknown/`);
     } catch (error) {
         expect(error.response.statusCode).toEqual(404);
+    }
+}, 5000);
+const basicService = {
+    "config": "/basic/setting.json",
+    "url": "http://localhost",
+    "active": true
+}
+test("handler have only a instance event reference by multiple router, init only once", async () => {
+    const config = clone(nodeConfig);
+    config.services["Basic"] = basicService;
+    const msnode = mserviceNode(config, __dirname);
+    activeNodes.add(msnode);
+    await msnode.start();
+    const response = await client.get(`basic/`);
+    expect(response.body).toEqual("hi");
+    expect(msnode.services.size).toEqual(2);
+    for (const service of msnode.services) {
+        //handler have only one even
+        expect(service._handlers.size).toEqual(1);
+        for (const handler of service._handlers)
+            if (handler.initCounter != null)
+                expect(handler.initCounter.counter).toEqual(1);
     }
 }, 5000);
 

@@ -1,0 +1,28 @@
+{
+    "service": {
+        "baseURL": "basic",
+        "routes": [
+            {
+                "method": "GET",
+                "url": "/",
+                "handler": {
+                    "file": "handler.js",
+                    "function": "hi"
+                },
+                "logLevel": "debug"
+            },
+            {
+                "method": "GET",
+                "url": "/:name",
+                "handler": {
+                    "file": "handler.js",
+                    "function": "hiUser"
+                },
+                "logLevel": "debug"
+            }
+        ],
+        "logger": {
+            "level": "debug"
+        }
+    }
+}
