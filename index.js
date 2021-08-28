@@ -9,7 +9,6 @@ const nodeServiceOptionsSchema = require("./service-schema.json")
 const nodeServiceOptionsSchemaValidate = ajv.compile(nodeServiceOptionsSchema);
 const path = require("path");
 const activeNodes = new Set();
-const handlerServiceMap = new Map();
 class MicroServiceNode {
     constructor(config_object, baseDir) {
         const valid = nodeOptionsSchemaValidate(config_object)

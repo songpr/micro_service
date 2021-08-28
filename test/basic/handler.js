@@ -10,7 +10,7 @@ const hi = async (request, reply) => {
     reply.send(`hi${name != null ? ` ${name}` : ""}`)
 }
 function close(service_log) {
-    service_log.info(`close home hanlder`)
+    service_log.info(`close home handler`)
 }
 
 handler.hi = hi;

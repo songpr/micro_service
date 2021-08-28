@@ -1,4 +1,3 @@
-
 const nodeConfig = {
     "node": {
         "name": "demo",
