@@ -1,0 +1,30 @@
+{
+  "name": "micro_node",
+  "version": "1.0.0",
+  "description": "minimal node micro service framework on top of fastify",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/songpr/micro_service.git"
+  },
+  "keywords": [
+    "nodejs",
+    "microserice",
+    "fastify"
+  ],
+  "author": "Pornchai Rungsirijaratthong",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/songpr/micro_service/issues"
+  },
+  "homepage": "https://github.com/songpr/micro_service#readme",
+  "dependencies": {
+    "fastify": "^3.20.2"
+  },
+  "devDependencies": {
+    "jest": "^27.1.0"
+  }
+}
