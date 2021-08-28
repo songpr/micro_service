@@ -68,6 +68,28 @@ test("handler have only a instance event reference by multiple router, init only
     }
 }, 5000);
 
+test("all handlers are init after node start, and close after node close", async () => {
+    const config = clone(nodeConfig);
+    config.services["Basic"] = basicService;
+    const msnode = mserviceNode(config, __dirname);
+    await msnode.start();
+    //activeNodes.add(msnode);
+    const response = await client.get(`basic/`);
+    expect(response.body).toEqual("hi");
+    expect(msnode.services.size).toEqual(2);
+    for (const service of msnode.services) {
+        for (const handler of service._handlers) {
+            expect(handler.isInit).toEqual(true);
+        }
+    }
+    await msnode.close();
+    for (const service of msnode.services) {
+        for (const handler of service._handlers) {
+            expect(handler.isClose).toEqual(true);
+        }
+    }
+}, 5000);
+
 afterEach(async () => {
     for (const node of activeNodes) {
         await node.close();
