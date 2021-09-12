@@ -34,6 +34,9 @@
                 "schema": {
                     "$ref": "#/definitions/Schema"
                 },
+                "swagger_note": {
+                    "type": "string"
+                },
                 "swagger": {
                     "$ref": "#/definitions/Swagger"
                 },
