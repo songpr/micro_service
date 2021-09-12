@@ -21,7 +21,8 @@
             "additionalProperties": false,
             "properties": {
                 "baseURL": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uri-reference"
                 },
                 "routes": {
                     "type": "array",
@@ -77,7 +78,8 @@
             "additionalProperties": false,
             "properties": {
                 "file": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uri-reference"
                 },
                 "function": {
                     "type": "string"

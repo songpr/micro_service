@@ -10,10 +10,10 @@ Each service can have independent fastify plug-in
 ## Installation:
 
 ```javascript
-npm install micro_node --save
+npm install mservice-node --save
 ```
 
 ## Usage:
 
 ```javascript
-const micro_node = require("micro_node");
+const ms_node = require("mservice-node");

@@ -3,6 +3,8 @@ const Fastify = require("fastify");
 // Node.js require:
 const Ajv7 = require("ajv")
 const ajv = new Ajv7() // options can be passed, e.g. {allErrors: true}
+const addFormats = require("ajv-formats")
+addFormats(ajv)
 const nodeOptionsSchema = require("./node-schema.json")
 const nodeOptionsSchemaValidate = ajv.compile(nodeOptionsSchema);
 const nodeServiceOptionsSchema = require("./service-schema.json")
@@ -38,13 +40,28 @@ class MicroServiceNode {
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
         const authentication_config = {};
+        if (config.swagger != null) {
+            const swagger = require("fastify-swagger");
+            const swagger_config = clone(config.swagger);
+            const routePrefix = swagger_config.routePrefix;
+            delete swagger_config.routePrefix;
+            fastify.register(require('fastify-swagger'), {
+                routePrefix: routePrefix,
+                swagger: swagger_config,
+                uiConfig: {
+                  docExpansion: 'full',
+                  deepLinking: false
+                },
+                staticCSP: true,
+                transformStaticCSP: (header) => header,
+                exposeRoute: true
+              });
+
+        }
         if (config.authentication != null) {
             for (const authType of Object.keys(config.authentication)) {
                 switch (authType) {
                     case "bearer":
-
-                        const bearerAuthPlugin = require('fastify-bearer-auth');
-                        //register to root fastify
                         const bearer_config = clone(config.authentication[authType]);
                         authentication_config.bearer = bearer_config;
                         break;

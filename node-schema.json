@@ -34,6 +34,9 @@
                 "schema": {
                     "$ref": "#/definitions/Schema"
                 },
+                "swagger": {
+                    "$ref": "#/definitions/Swagger"
+                },
                 "logger_note": {
                     "type": "string"
                 },
@@ -176,6 +179,16 @@
             "type": "object",
             "title": "Schema"
         },
+        "Swagger": {
+            "type": "object",
+            "title": "Swagger",
+            "properties": {
+                "routePrefix": {
+                    "type": "string",
+                    "format": "uri-reference"
+                }
+            }
+        },
         "Services": {
             "type": "object",
             "patternProperties": {
@@ -193,10 +206,12 @@
                     "type": "string"
                 },
                 "config": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uri-reference"
                 },
                 "url": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uri-reference"
                 },
                 "authentication": {
                     "type": "object",
