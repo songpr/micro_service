@@ -82,11 +82,13 @@ class MicroServiceNode {
                 }
             }
             delete schema_config.use_basic;
-            for (const [a_schema_prefix, a_schema_config] of Object.entries(schema_config)) {
-                const a_schema = require(baseDir + a_schema_config.config);
-                for (const [id, schema_object] of Object.entries(a_schema)) {
-                    schema_object["$id"] = `${a_schema_prefix}.${id}`;//id will be prefix $ref by { $ref:${a_schema_prefix}.${id} }
-                    fastify.addSchema(schema_object);
+            if (schema_config.config != null) {
+                for (const [a_schema_prefix, a_schema_config_path] of Object.entries(schema_config.config)) {
+                    const a_schema = require(baseDir + a_schema_config_path);
+                    for (const [id, schema_object] of Object.entries(a_schema)) {
+                        schema_object["$id"] = `${a_schema_prefix}.${id}`;//id will be prefix $ref by { $ref:${a_schema_prefix}.${id} }
+                        fastify.addSchema(schema_object);
+                    }
                 }
             }
         }
@@ -101,7 +103,6 @@ class MicroServiceNode {
         for (const service of this.services) {
             await service.start(this.fastify, this.authentication_config)
         }
-        console.log(this.config.node.port, this.config.node.listen);
         await this.fastify.listen(this.config.node.port, this.config.node.listen);
         activeNodes.add(this);// add after start successfully
         this.log.info(`Start node successfully.`);
