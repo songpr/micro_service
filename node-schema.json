@@ -164,7 +164,8 @@
                     "$ref": "#/definitions/hostname"
                 },
                 "listen": {
-                    "$ref": "#/definitions/ip4"
+                    "type": "string",
+                    "format": "ipv4"
                 },
                 "port": {
                     "type": "integer"
@@ -180,7 +181,27 @@
         },
         "Schema": {
             "type": "object",
-            "title": "Schema"
+            "title": "Schema",
+            "properties": {
+                "use_basic": {
+                    "type": "boolean"
+                },
+                "config": {
+                    "type": "object",
+                    "propertyNames": {
+                        "$ref": "#/definitions/eng_field_name_pattern"
+                    },
+                    "patternProperties": {
+                        ".+$": {
+                            "type": "string",
+                            "format": "uri-reference"
+                        }
+                    }
+                }
+            },
+            "required": [
+                "use_basic"
+            ]
         },
         "Swagger": {
             "type": "object",
@@ -263,9 +284,8 @@
             "type": "string",
             "pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"
         },
-        "ip4": {
-            "type": "string",
-            "pattern": "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+        "eng_field_name_pattern": {
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-]*[a-zA-Z0-9]$"
         }
     }
 }

@@ -103,6 +103,9 @@
                 },
                 "body": {
                     "type": "object"
+                },
+                "response": {
+                    "type": "object"
                 }
             },
             "title": "Schema"
