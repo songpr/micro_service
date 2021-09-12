@@ -93,8 +93,11 @@
         },
         "Schema": {
             "type": "object",
-            "additionalProperties": false,
+            "additionalProperties": true,
             "properties": {
+                "params": {
+                    "type": "object"
+                },
                 "query": {
                     "type": "object"
                 },

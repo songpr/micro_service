@@ -44,6 +44,20 @@
     "schema": {
         "config": "/schema.json"
     },
+    "swagger": {
+        "routePrefix": "/doc",
+        "info": {
+            "title": "micro service demo apis",
+            "description": "micro service demo apis' document",
+            "version": "1.0"
+        },
+        "security": [
+            {
+                "type": "http",
+                "scheme": "basic"
+            }
+        ]
+    },
     "logger_note": "pino log options for this node",
     "logger": {
         "level": "debug"

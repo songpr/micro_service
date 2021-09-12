@@ -187,7 +187,10 @@
                     "type": "string",
                     "format": "uri-reference"
                 }
-            }
+            },
+            "required": [
+                "routePrefix"
+            ]
         },
         "Services": {
             "type": "object",

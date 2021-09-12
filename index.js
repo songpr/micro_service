@@ -47,15 +47,19 @@ class MicroServiceNode {
             delete swagger_config.routePrefix;
             fastify.register(require('fastify-swagger'), {
                 routePrefix: routePrefix,
-                swagger: swagger_config,
+                openapi: swagger_config,
                 uiConfig: {
-                  docExpansion: 'full',
-                  deepLinking: false
+                    docExpansion: 'full',
+                    deepLinking: false
                 },
                 staticCSP: true,
                 transformStaticCSP: (header) => header,
                 exposeRoute: true
-              });
+            });
+            fastify.ready(err => {
+                if (err) throw err
+                fastify.swagger()
+            })
 
         }
         if (config.authentication != null) {
@@ -66,6 +70,13 @@ class MicroServiceNode {
                         authentication_config.bearer = bearer_config;
                         break;
                 }
+            }
+        }
+        if (config.schema != null) {
+            const base_service_schema = require(baseDir + config.schema.config);
+            for(const [id,schema_object] of Object.entries(base_service_schema)){
+                schema_object["$id"]=id;
+                fastify.addSchema(schema_object);
             }
         }
         Object.defineProperty(this, 'authentication_config', { get: () => authentication_config, enumerable: false });
