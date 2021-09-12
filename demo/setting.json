@@ -40,9 +40,12 @@
             "bodyLimit": 10485760
         }
     },
-    "schema_note": "global schema for service config to reference",
+    "schema_note": "use_basic:true by default to use base-schema_for_route.json, supply other schema that will prefix with <field name>. e.g. { $ref:demo.api_response } ",
     "schema": {
-        "config": "/schema.json"
+        "use_basic": true,
+        "demo": {
+            "config": "/schema.json"
+        }
     },
     "swagger_note": "Not recommend in production server",
     "swagger": {

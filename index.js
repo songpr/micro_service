@@ -45,7 +45,7 @@ class MicroServiceNode {
             const swagger_config = clone(config.swagger);
             const routePrefix = swagger_config.routePrefix;
             delete swagger_config.routePrefix;
-            fastify.register(require('fastify-swagger'), {
+            fastify.register(swagger, {
                 routePrefix: routePrefix,
                 openapi: swagger_config,
                 uiConfig: {
@@ -73,11 +73,23 @@ class MicroServiceNode {
             }
         }
         if (config.schema != null) {
-            const base_service_schema = require(baseDir + config.schema.config);
-            for(const [id,schema_object] of Object.entries(base_service_schema)){
-                schema_object["$id"]=id;
-                fastify.addSchema(schema_object);
+            const schema_config = clone(config.schema);
+            if (schema_config.use_basic === true) {
+                const base_service_schema = require(__dirname + "/basic-schema_for_route.json");
+                for (const [id, schema_object] of Object.entries(base_service_schema)) {
+                    schema_object["$id"] = id;
+                    fastify.addSchema(schema_object);
+                }
             }
+        //     delete schema_config.use_basic;
+        //     for (const [a_schema_prefix, a_schema_config] of Object.entries(schema_config)) {
+        //         console.log(a_schema_prefix, a_schema_config)
+        //         const a_schema = require(baseDir + a_schema_config.config);
+        //         for (const [id, schema_object] of Object.entries(a_schema)) {
+        //             schema_object["$id"] = `${a_schema_prefix}-${id}`;//id will be prefix $ref by { $ref:${a_schema_prefix}.${id} }
+        //             fastify.addSchema(schema_object);
+        //         }
+        //     }
         }
         Object.defineProperty(this, 'authentication_config', { get: () => authentication_config, enumerable: false });
         Object.defineProperty(this, 'baseDir', { get: () => baseDir, enumerable: true });
@@ -85,11 +97,13 @@ class MicroServiceNode {
         log.info(`Load node options successfully.`);
     }
     async start() {
+        this.log.info(`Start node.`);
         // start all service
         for (const service of this.services) {
             await service.start(this.fastify, this.authentication_config)
         }
-        await this.fastify.listen(this.config.node.port, this.config.node.address);
+        console.log(this.config.node.port, this.config.node.listen);
+        await this.fastify.listen(this.config.node.port, this.config.node.listen);
         activeNodes.add(this);// add after start successfully
         this.log.info(`Start node successfully.`);
     }
