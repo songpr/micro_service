@@ -97,5 +97,33 @@
                 "$ref": "thai-eng_value#"
             }
         }
+    },
+    "api_response": {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "string",
+                "enum": [
+                    "success",
+                    "validation error",
+                    "error"
+                ]
+            },
+            "error_code": {
+                "type": "string",
+                "description": "failure code for check type of error, this will hardly change",
+                "pattern": "^[A-Z]{2,100}(_[A-Z0-9]{2,100}){0,10}$"
+            },
+            "message": {
+                "type": "string"
+            },
+            "data": {
+                "type": "object",
+                "description": "json response data"
+            }
+        },
+        "required": [
+            "status"
+        ]
     }
 }
