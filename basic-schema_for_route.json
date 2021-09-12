@@ -98,21 +98,14 @@
             }
         }
     },
-    "api_response": {
+    "api_success": {
         "type": "object",
         "properties": {
             "status": {
                 "type": "string",
                 "enum": [
-                    "success",
-                    "validation error",
-                    "error"
+                    "success"
                 ]
-            },
-            "error_code": {
-                "type": "string",
-                "description": "failure code for check type of error, this will hardly change",
-                "pattern": "^[A-Z]{2,100}(_[A-Z0-9]{2,100}){0,10}$"
             },
             "message": {
                 "type": "string"
@@ -124,6 +117,47 @@
         },
         "required": [
             "status"
+        ]
+    },
+    "api_error": {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "string",
+                "enum": [
+                    "error"
+                ]
+            },
+            "message": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "status",
+            "message"
+        ]
+    },
+    "api_validate_error": {
+        "type": "object",
+        "properties": {
+            "status": {
+                "type": "string",
+                "enum": [
+                    "validation error"
+                ]
+            },
+            "error_code": {
+                "type": "string",
+                "description": "failure code for check type of error, this will hardly change",
+                "pattern": "^[A-Z]{2,100}(_[A-Z0-9]{2,100}){0,10}$"
+            },
+            "message": {
+                "type": "string"
+            }
+        },
+        "required": [
+            "status",
+            "error_code"
         ]
     }
 }

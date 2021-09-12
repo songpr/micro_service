@@ -81,15 +81,14 @@ class MicroServiceNode {
                     fastify.addSchema(schema_object);
                 }
             }
-        //     delete schema_config.use_basic;
-        //     for (const [a_schema_prefix, a_schema_config] of Object.entries(schema_config)) {
-        //         console.log(a_schema_prefix, a_schema_config)
-        //         const a_schema = require(baseDir + a_schema_config.config);
-        //         for (const [id, schema_object] of Object.entries(a_schema)) {
-        //             schema_object["$id"] = `${a_schema_prefix}-${id}`;//id will be prefix $ref by { $ref:${a_schema_prefix}.${id} }
-        //             fastify.addSchema(schema_object);
-        //         }
-        //     }
+            delete schema_config.use_basic;
+            for (const [a_schema_prefix, a_schema_config] of Object.entries(schema_config)) {
+                const a_schema = require(baseDir + a_schema_config.config);
+                for (const [id, schema_object] of Object.entries(a_schema)) {
+                    schema_object["$id"] = `${a_schema_prefix}.${id}`;//id will be prefix $ref by { $ref:${a_schema_prefix}.${id} }
+                    fastify.addSchema(schema_object);
+                }
+            }
         }
         Object.defineProperty(this, 'authentication_config', { get: () => authentication_config, enumerable: false });
         Object.defineProperty(this, 'baseDir', { get: () => baseDir, enumerable: true });
