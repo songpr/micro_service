@@ -1,8 +1,11 @@
 {
     "$id": "demo",
-    "definitions": {
-        "api_sucess": {
-            "type": "string"
-        }
+    "api_sucess": {
+        "type": "string",
+        "title": "api_succes"
+    },
+    "api_error": {
+        "type": "string",
+        "title": "api_error"
     }
 }
