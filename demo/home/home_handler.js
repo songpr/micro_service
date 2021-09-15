@@ -6,6 +6,9 @@ async function init(service_log) {
 }
 const hi = async (request, reply) => {
     const name = request.params != null && request.params.name != null ? request.params.name : null;
+    if(name == "error"){
+        throw new Error("Error")
+    }
     reply.send(`hi${name != null ? ` ${name}` : ""}`)
 }
 function close(service_log) {

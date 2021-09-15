@@ -9,6 +9,9 @@
                     "response": {
                         "200": {
                             "$ref": "demo#/api_sucess"
+                        },
+                        "400": {
+                            "$ref": "mservice-core#/api_validate_error"
                         }
                     }
                 },
@@ -33,6 +36,9 @@
                     "response": {
                         "200": {
                             "$ref": "demo#/api_sucess"
+                        },
+                        "400": {
+                            "$ref": "mservice-core#/api_validate_error"
                         }
                     }
                 },

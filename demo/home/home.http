@@ -8,3 +8,7 @@ Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQ
 ### error
 GET http://localhost:3000/home/acd$
 Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
+
+### Error
+GET http://localhost:3000/home/error
+Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG

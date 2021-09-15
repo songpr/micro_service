@@ -23,6 +23,10 @@
         "type": "string",
         "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_\\-]+$"
     },
+    "thai-eng_message": {
+        "type": "string",
+        "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9 _\\-!\\?]+$"
+    },
     "thai-eng_search": {
         "type": "string",
         "pattern": "^[ก-ฮเ-ไ๑-๙a-zA-Z0-9_\\-!\\@][ก-๙a-zA-Z0-9_\\-!\\@]*$"
@@ -54,31 +58,37 @@
     "api_success": {
         "type": "object",
         "properties": {
-            "status": {
-                "type": "string",
-                "enum": [
-                    "success"
-                ]
+            "statusCode": {
+                "type": "integer",
+                "minimum": 200,
+                "maximum": 200
             },
             "message": {
-                "type": "string"
+                "$ref": "thai-eng_message",
+                "description": "message contian meta data about this response [optional]"
             },
             "data": {
                 "type": "object",
-                "description": "json response data"
+                "description": "json response data if there is any"
             }
         },
         "required": [
             "status"
-        ]
+        ],
+        "title":"api success"
     },
     "api_error": {
         "type": "object",
         "properties": {
-            "status": {
+            "statusCode": {
+                "type": "integer",
+                "minimum": 500,
+                "maximum": 500
+            },
+            "error": {
                 "type": "string",
                 "enum": [
-                    "error"
+                    "Internal Server Error"
                 ]
             },
             "message": {
@@ -86,20 +96,20 @@
             }
         },
         "required": [
-            "status",
+            "statusCode",
             "message"
-        ]
+        ],
+        "title":"api error"
     },
     "api_validate_error": {
         "type": "object",
         "properties": {
-            "status": {
-                "type": "string",
-                "enum": [
-                    "validation error"
-                ]
+            "statusCode": {
+                "type": "integer",
+                "minimum": 400,
+                "maximum": 400
             },
-            "error_code": {
+            "error": {
                 "type": "string",
                 "description": "failure code for check type of error, this will hardly change",
                 "pattern": "^[A-Z]{2,100}(_[A-Z0-9]{2,100}){0,10}$"
@@ -109,8 +119,10 @@
             }
         },
         "required": [
-            "status",
-            "error_code"
-        ]
+            "statusCode",
+            "error",
+            "message"
+        ],
+        "title":"api validate error"
     }
 }
