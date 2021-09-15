@@ -8,7 +8,7 @@
                 "schema": {
                     "response": {
                         "200": {
-                            "$ref": "demo.api_sucess#"
+                            "$ref": "demo#/definitions/api_sucess"
                         }
                     }
                 },
@@ -26,13 +26,13 @@
                         "type": "object",
                         "properties": {
                             "name": {
-                                "$ref": "thai-eng_name#"
+                                "type": "string"
                             }
                         }
                     },
                     "response": {
                         "200": {
-                            "$ref": "demo.api_sucess#"
+                            "$ref": "demo#/definitions/api_sucess"
                         }
                     }
                 },

@@ -76,19 +76,13 @@ class MicroServiceNode {
             const schema_config = clone(config.schema);
             if (schema_config.use_basic === true) {
                 const base_service_schema = require(__dirname + "/basic-schema_for_route.json");
-                for (const [id, schema_object] of Object.entries(base_service_schema)) {
-                    schema_object["$id"] = id;
-                    fastify.addSchema(schema_object);
-                }
+                fastify.addSchema(base_service_schema);
             }
             delete schema_config.use_basic;
             if (schema_config.config != null) {
-                for (const [a_schema_prefix, a_schema_config_path] of Object.entries(schema_config.config)) {
+                for (const [a_schema_name, a_schema_config_path] of Object.entries(schema_config.config)) {
                     const a_schema = require(baseDir + a_schema_config_path);
-                    for (const [id, schema_object] of Object.entries(a_schema)) {
-                        schema_object["$id"] = `${a_schema_prefix}.${id}`;//id will be prefix $ref by { $ref:${a_schema_prefix}.${id} }
-                        fastify.addSchema(schema_object);
-                    }
+                    fastify.addSchema(a_schema);
                 }
             }
         }
