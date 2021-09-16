@@ -1,5 +1,6 @@
 {
     "$id": "demo",
+    "title":"demo schema",
     "api_sucess": {
         "type": "string",
         "title": "api_succes"

@@ -40,6 +40,35 @@ class MicroServiceNode {
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
         const authentication_config = {};
+
+        if (config.authentication != null) {
+            for (const authType of Object.keys(config.authentication)) {
+                switch (authType) {
+                    case "bearer":
+                        const bearer_config = clone(config.authentication[authType]);
+                        authentication_config.bearer = bearer_config;
+                        break;
+                }
+            }
+        }
+        const schemas = []
+        if (config.schema != null) {
+            const schema_config = clone(config.schema);
+            if (schema_config.use_basic === true) {
+                const base_service_schema = require(__dirname + "/basic-schema_for_route.json");
+                fastify.addSchema(base_service_schema);
+                schemas.push(base_service_schema)
+            }
+            delete schema_config.use_basic;
+            if (schema_config.config != null) {
+                for (const [a_schema_name, a_schema_config_path] of Object.entries(schema_config.config)) {
+                    const a_schema = require(baseDir + a_schema_config_path);
+                    fastify.addSchema(a_schema);
+                    schemas.push(a_schema)
+                }
+            }
+        }
+
         if (config.swagger != null) {
             const swagger = require("fastify-swagger");
             const swagger_config = clone(config.swagger);
@@ -54,37 +83,18 @@ class MicroServiceNode {
                 },
                 staticCSP: true,
                 transformStaticCSP: (header) => header,
-                exposeRoute: true
+                exposeRoute: true,
+                refResolver: {
+                    clone: true, // Clone the input schema without changing it. Default: false
+                    applicationUri: 'my-application.org', // You need to provide an unique URI to resolve relative `$id`s
+                    externalSchemas: schemas // The schemas provided at the creation of the resolver, will be used evvery time `.resolve` will be called
+                }
             });
             fastify.ready(err => {
                 if (err) throw err
                 fastify.swagger()
             })
 
-        }
-        if (config.authentication != null) {
-            for (const authType of Object.keys(config.authentication)) {
-                switch (authType) {
-                    case "bearer":
-                        const bearer_config = clone(config.authentication[authType]);
-                        authentication_config.bearer = bearer_config;
-                        break;
-                }
-            }
-        }
-        if (config.schema != null) {
-            const schema_config = clone(config.schema);
-            if (schema_config.use_basic === true) {
-                const base_service_schema = require(__dirname + "/basic-schema_for_route.json");
-                fastify.addSchema(base_service_schema);
-            }
-            delete schema_config.use_basic;
-            if (schema_config.config != null) {
-                for (const [a_schema_name, a_schema_config_path] of Object.entries(schema_config.config)) {
-                    const a_schema = require(baseDir + a_schema_config_path);
-                    fastify.addSchema(a_schema);
-                }
-            }
         }
         Object.defineProperty(this, 'authentication_config', { get: () => authentication_config, enumerable: false });
         Object.defineProperty(this, 'baseDir', { get: () => baseDir, enumerable: true });

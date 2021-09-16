@@ -1,6 +1,7 @@
 {
     "$id": "mservice-core",
     "description": "micro service core schema for basic usage",
+    "title":"micro service basic schema",
     "ids": {
         "type": "string",
         "pattern": "^\\d+(,\\d+){0,1000}$",
@@ -64,7 +65,7 @@
                 "maximum": 200
             },
             "message": {
-                "$ref": "thai-eng_message",
+                "$ref": "#/thai-eng_message",
                 "description": "message contian meta data about this response [optional]"
             },
             "data": {
