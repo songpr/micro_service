@@ -3,11 +3,7 @@ const { mserviceNode } = require("../index");
 
 const start = async () => {
     const msnode = mserviceNode(setting, __dirname);
-    try {
-        await msnode.start();
-    } catch (err) {
-        console.log(`error:${err.message}\nstack:${err.stack}`);
-    }
+    await msnode.start();
 }
 start()
     .then(() => {
@@ -15,4 +11,5 @@ start()
     })
     .catch(err => {
         console.log(`error:${err.message}\nstack:${err.stack}`);
+        process.exit(1);
     });

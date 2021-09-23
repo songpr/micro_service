@@ -104,12 +104,14 @@ class MicroServiceNode {
     async start() {
         this.log.info(`Start node.`);
         // start all servicee
-        this.services.forEach(srv => { this.log.debug({ baseURL: srv.config.service.baseURL }) })
         this.log.debug({ services_size: this.services.size });
         for (const service of this.services) {
             this.log.debug({ start_service: service.config.service.baseURL });
-            await service.start(this.fastify, this.authentication_config)
+            await service.start(this.fastify, this.authentication_config);
         }
+        this.log.info(`Start all service.`);
+        await this.fastify.ready();
+        this.log.info(`fastiy ready.`);
         await this.fastify.listen(this.config.node.port, this.config.node.listen);
         activeNodes.add(this);// add after start successfully
         this.log.info(`Start node successfully.`);
@@ -125,6 +127,7 @@ class MicroServiceNode {
         await this.fastify.close();//close fastify last
     }
 }
+
 class NodeService {
     constructor(serviceName, config_object, servicePath) {
         const valid = nodeServiceOptionsSchemaValidate(config_object)
@@ -139,7 +142,7 @@ class NodeService {
         Object.defineProperty(this, 'config', { get: () => config });
         const log_base = { pid: process.pid, service: `${serviceName}` };
         const log = require('pino')({ level: this.config.service.logger.level, base: log_base });
-        log.debug(config_object)
+        log.debug({ config: this.config })
         Object.defineProperty(this, 'log', { get: () => log, enumerable: true });
         const _handlers = new Set();
         Object.defineProperty(this, '_handlers', { get: () => _handlers, enumerable: false });
@@ -150,45 +153,55 @@ class NodeService {
 
     }
     async start(fastify, node_authentication_config) {
+        const serviceInstance = this;
+        const error = {};
         fastify.register(async (fastifyServiceContext) => {
-            const service_handler_config = JSON.parse(JSON.stringify(this.config)); //copy config
-            //merge both
-            const authentication_config = { ...(node_authentication_config != null ? node_authentication_config : {}), ...service_handler_config.service.authentication != null ? service_handler_config.service.authentication : {} };
-            for (const authType of Object.keys(authentication_config)) {
-                switch (authType) {
-                    case "bearer":
-                        const bearerAuthPlugin = require('fastify-bearer-auth');
-                        //register to root fastify
-                        const bearer_config = authentication_config[authType];
-                        //bearer_config["addHook"] = false; //so can be override by service
-                        fastify.register(bearerAuthPlugin, bearer_config);
-                        break;
+            try {
+                const service_handler_config = JSON.parse(JSON.stringify(this.config)); //copy config
+                //merge both
+                const authentication_config = { ...(node_authentication_config != null ? node_authentication_config : {}), ...service_handler_config.service.authentication != null ? service_handler_config.service.authentication : {} };
+                for (const authType of Object.keys(authentication_config)) {
+                    switch (authType) {
+                        case "bearer":
+                            const bearerAuthPlugin = require('fastify-bearer-auth');
+                            //register to root fastify
+                            const bearer_config = authentication_config[authType];
+                            //bearer_config["addHook"] = false; //so can be override by service
+                            fastify.register(bearerAuthPlugin, bearer_config);
+                            break;
+                    }
                 }
-            }
-            delete service_handler_config.service;//remove service config since it use for service only
-            Object.freeze(service_handler_config);// freeze config
-            this.log.debug({ service_handler_config: service_handler_config, routes: this.config.service.routes })
-            for (const orgRoute of this.config.service.routes) {
-                const route = JSON.parse(JSON.stringify(orgRoute));//copy since we gonna change it
-                route.url = "/" + this.config.service.baseURL + route.url
-
-                const funcName = route.handler.function;
-                const hanlder_path = this.path + "/" + route.handler.file;
-                const obj_handler = require(hanlder_path);
-                this._handlers.add(obj_handler);
-                if (!obj_handler instanceof NodeServiceHandler) {
-                    throw new Error(` ${this.name}'s handler must be instance of ServiceHandler`);
+                delete service_handler_config.service;//remove service config since it use for service only
+                Object.freeze(service_handler_config);// freeze config
+                serviceInstance.log.debug({ routes: serviceInstance.config.service.routes })
+                for (const orgRoute of serviceInstance.config.service.routes) {
+                    const route = JSON.parse(JSON.stringify(orgRoute));//copy since we gonna change it
+                    serviceInstance.log.debug({ route });
+                    route.url = "/" + serviceInstance.config.service.baseURL + route.url
+                    const funcName = route.handler.function;
+                    const handler_path = serviceInstance.path + "/" + route.handler.file;
+                    const obj_handler = require(handler_path);
+                    if (!obj_handler instanceof NodeServiceHandler) {
+                        throw new Error(` ${serviceInstance.name}'s handler must be instance of ServiceHandler`);
+                    }
+                    serviceInstance._handlers.add(obj_handler);
+                    if (typeof (obj_handler[funcName]) !== 'function') {
+                        throw new Error(` ${serviceInstance.name}'s handler function for route:${route.url} is not a function`);
+                    }
+                    serviceInstance.log.debug("Load function successfully");
+                    route.handler = obj_handler[funcName];
+                    await obj_handler.init(service_handler_config, serviceInstance.log);
+                    await fastifyServiceContext.route(route);
+                    serviceInstance.log.debug({ service: serviceInstance.name, route: route.url, status: "initialized" })
                 }
-                if (typeof (obj_handler[funcName]) !== 'function') {
-                    throw new Error(` ${this.name}'s handler function for route:${route.url} is not a function`);
-                }
-                route.handler = obj_handler[funcName];
-                await obj_handler.init(service_handler_config, this.log);
-                fastifyServiceContext.route(route);
-                this.log.debug({ service: this.name, route: route.url, status: "initialized" })
+            } catch (fastifyRegisterError) {
+                serviceInstance.log.error({ error: `error while in fastify register`, stack: fastifyRegisterError.stack });
+                error.fastifyRegisterError = fastifyRegisterError;
             }
         });
-        this.log.info(`Load '${this.name}' service's options successfully.`);
+        await fastify.after(); //make sure all plug in loaded after register
+        if (error.fastifyRegisterError) throw error.fastifyRegisterError;
+        this.log.info(`start service successfully.`);
     }
     async close() {
         this.log.info(`closing '${this.name}' service and it's handlers.`)

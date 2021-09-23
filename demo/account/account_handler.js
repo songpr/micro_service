@@ -5,10 +5,11 @@ async function init(service_log) {
     service_log.info({ line_handler_config: this.config })
 }
 const getToken = async (request, reply) => {
-    reply.send({ statusCode: 200, data: { token: "ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG" } })
+    reply.send({ statusCode: 200, data: { token: "ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG" } });
+    return;
 }
 function close(service_log) {
-    service_log.info(`close home hanlder`)
+    service_log.info(`close line hanlder`)
 }
 
 handler.getToken = getToken;

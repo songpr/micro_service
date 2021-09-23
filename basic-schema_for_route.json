@@ -65,8 +65,7 @@
                 "maximum": 200
             },
             "message": {
-                "$ref": "#/thai-eng_message",
-                "description": "message contian meta data about this response [optional]"
+                "type":"string"
             },
             "data": {
                 "type": "object",
