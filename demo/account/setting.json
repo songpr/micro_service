@@ -15,20 +15,35 @@
                         }
                     },
                     "body": {
-                        "line_login": {
-                            "anyOf": [
-                                {
+                        "type": "object",
+                        "properties": {
+                            "line_login": {
+                                "type": "object",
+                                "properties": {
                                     "access_token": {
                                         "type": "string"
-                                    }
-                                },
-                                {
+                                    },
                                     "id_token": {
                                         "type": "string"
                                     }
-                                }
-                            ]
-                        }
+                                },
+                                "oneOf": [
+                                    {
+                                        "required": [
+                                            "access_token"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "id_token"
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                        "required": [
+                            "line_login"
+                        ]
                     }
                 },
                 "handler": {

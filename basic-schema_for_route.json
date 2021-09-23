@@ -1,7 +1,7 @@
 {
     "$id": "mservice-core",
     "description": "micro service core schema for basic usage",
-    "title":"micro service basic schema",
+    "title": "micro service basic schema",
     "ids": {
         "type": "string",
         "pattern": "^\\d+(,\\d+){0,1000}$",
@@ -65,17 +65,18 @@
                 "maximum": 200
             },
             "message": {
-                "type":"string"
+                "type": "string"
             },
             "data": {
                 "type": "object",
-                "description": "json response data if there is any"
+                "description": "json response data if there is any",
+                "additionalProperties": true
             }
         },
         "required": [
-            "status"
+            "statusCode"
         ],
-        "title":"api success"
+        "title": "api success"
     },
     "api_error": {
         "type": "object",
@@ -99,7 +100,7 @@
             "statusCode",
             "message"
         ],
-        "title":"api error"
+        "title": "api error"
     },
     "api_validate_error": {
         "type": "object",
@@ -123,6 +124,6 @@
             "error",
             "message"
         ],
-        "title":"api validate error"
+        "title": "api validate error"
     }
 }

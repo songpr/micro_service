@@ -1,0 +1,20 @@
+POST http://localhost:3000/Account/token
+Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
+Content-Type: application/json
+
+{
+    "line_login":{
+        "access_token":"test"
+    }
+}
+
+###
+POST https://7866-49-0-65-155.ngrok.io/Account/token
+Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
+Content-Type: application/json
+
+{
+    "line_login":{
+        "access_token":"test"
+    }
+}
