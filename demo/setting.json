@@ -17,6 +17,17 @@
                 }
             },
             "active": true
+        },
+        "account": {
+            "note": "account service for getting token",
+            "config": "/account/setting.json",
+            "url": "http://localhost",
+            "authentication": {
+                "bearer": {
+                    "key": "${services_primary_auth_key}"
+                }
+            },
+            "active": false
         }
     },
     "authentication_note": "node authentication, each property is a auth method order by setting. auth can be overrided by service authentication",

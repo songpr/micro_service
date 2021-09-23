@@ -29,7 +29,7 @@ class MicroServiceNode {
         Object.defineProperty(this, 'config', { get: () => config });
         const fastify = Fastify(config.fastify != null ? config.fastify.options : null);
         Object.defineProperty(this, 'fastify', { get: () => fastify });
-        const log = require('pino')({ level: config.logger.level, base: { pid: process.pid, mserice_node: "core" } });
+        const log = require('pino')({ level: config.logger.level, base: { pid: process.pid, service_node: "core" } });
         Object.defineProperty(this, 'log', { get: () => log, enumerable: true });
         const services = new Set();
         Object.defineProperty(this, 'services', { get: () => services, enumerable: true });
@@ -103,8 +103,11 @@ class MicroServiceNode {
     }
     async start() {
         this.log.info(`Start node.`);
-        // start all service
+        // start all servicee
+        this.services.forEach(srv => { this.log.debug({ baseURL: srv.config.service.baseURL }) })
+        this.log.debug({ services_size: this.services.size });
         for (const service of this.services) {
+            this.log.debug({ start_service: service.config.service.baseURL });
             await service.start(this.fastify, this.authentication_config)
         }
         await this.fastify.listen(this.config.node.port, this.config.node.listen);
@@ -134,9 +137,9 @@ class NodeService {
         }
         const config = config_object;
         Object.defineProperty(this, 'config', { get: () => config });
-        const log_base = { pid: process.pid };
-        log_base[`${serviceName}_service`]
+        const log_base = { pid: process.pid, service: `${serviceName}` };
         const log = require('pino')({ level: this.config.service.logger.level, base: log_base });
+        log.debug(config_object)
         Object.defineProperty(this, 'log', { get: () => log, enumerable: true });
         const _handlers = new Set();
         Object.defineProperty(this, '_handlers', { get: () => _handlers, enumerable: false });
@@ -162,9 +165,9 @@ class NodeService {
                         break;
                 }
             }
-
             delete service_handler_config.service;//remove service config since it use for service only
             Object.freeze(service_handler_config);// freeze config
+            this.log.debug({ service_handler_config: service_handler_config, routes: this.config.service.routes })
             for (const orgRoute of this.config.service.routes) {
                 const route = JSON.parse(JSON.stringify(orgRoute));//copy since we gonna change it
                 route.url = "/" + this.config.service.baseURL + route.url

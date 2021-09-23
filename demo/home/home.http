@@ -1,14 +1,14 @@
-GET http://localhost:3000/home/Song
+GET http://localhost:3000/Home/Song
 Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
 
 ###
-GET http://localhost:3000/home/รัน
+GET http://localhost:3000/Home/รัน
 Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
 
 ### error
-GET http://localhost:3000/home/acd$
+GET http://localhost:3000/Home/acd$
 Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
 
 ### Error
-GET http://localhost:3000/home/error
+GET http://localhost:3000/Home/error
 Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG

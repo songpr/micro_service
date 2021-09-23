@@ -1,6 +1,6 @@
 {
     "service": {
-        "baseURL": "home",
+        "baseURL": "Home",
         "routes": [
             {
                 "method": "GET",
