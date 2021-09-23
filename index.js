@@ -222,7 +222,7 @@ const signalTraps = ['SIGTERM', 'SIGINT', 'SIGUSR2']
 
 let isUnhandledRejectionLoop = false;
 errorTypes.map(type => {
-    process.on(type, async e => {
+    process.on(type, async error => {
         try {
             if (isUnhandledRejectionLoop) {
                 console.error(type, "is looped");
