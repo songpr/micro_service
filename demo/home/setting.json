@@ -8,7 +8,7 @@
                 "schema": {
                     "response": {
                         "200": {
-                            "$ref": "demo#/api_sucess"
+                            "$ref": "demo#/api_success"
                         },
                         "400": {
                             "$ref": "mservice-core#/api_validate_error"
