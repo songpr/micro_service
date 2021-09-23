@@ -3,10 +3,10 @@
     "title":"demo schema",
     "api_success": {
         "type": "string",
-        "title": "api_succes"
+        "title": "api success"
     },
     "api_error": {
         "type": "string",
-        "title": "api_error"
+        "title": "api error"
     }
 }
