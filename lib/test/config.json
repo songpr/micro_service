@@ -1,0 +1,12 @@
+{
+    "config": {
+        "config_string": "${string_env}",
+        "config_int": "%{number_env}",
+        "config_boolean": "%{boolean_env}"
+    },
+    "config_with_default": {
+        "config_string": "${string_noenv|default_string}",
+        "config_int": "%{number_noenv|0}",
+        "config_boolean": "%{boolean_noenv|true}"
+    }
+}

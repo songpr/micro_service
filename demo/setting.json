@@ -34,10 +34,7 @@
     "authentication": {
         "bearer": {
             "keys": [
-                "${services_primary_auth_key}",
-                "${services_secondary_auth_key}",
-                "${services_external_auth_key}",
-                "ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG"
+                "${services_primary_auth_key}"
             ]
         }
     },
