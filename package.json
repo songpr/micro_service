@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "demo": "export $(grep -v '^#' .env | xargs -d '\n') && node demo.js"
+    "demo": "export $(grep -v '^#' ./demo/.env | xargs -d '\n') && node ./demo/demo.js"
   },
   "repository": {
     "type": "git",

@@ -1,8 +1,11 @@
-const setting = require("./setting.json");
+const fs = require("fs");
+const setting = fs.readFileSync(__dirname + "/setting.json", { encoding: 'utf8', flag: 'r' });
 const { mserviceNode } = require("../index");
+const util = require("../lib/util");
+const replace_config = util.replaceByEnv(setting);
 
 const start = async () => {
-    const msnode = mserviceNode(setting, __dirname);
+    const msnode = mserviceNode(JSON.parse(replace_config), __dirname);
     await msnode.start();
 }
 start()
