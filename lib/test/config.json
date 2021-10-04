@@ -2,11 +2,13 @@
     "config": {
         "config_string": "${string_env}",
         "config_int": "%{number_env}",
-        "config_boolean": "%{boolean_env}"
+        "config_boolean": "%{boolean_env}",
+        "config_date": "d{date_noenv}"
     },
     "config_with_default": {
         "config_string": "${string_noenv|default_string}",
         "config_int": "%{number_noenv|0}",
-        "config_boolean": "%{boolean_noenv|true}"
+        "config_boolean": "%{boolean_noenv|true}",
+        "config_date": "d{date_noenv}|2021-09-09 09:09"
     }
 }
