@@ -168,10 +168,10 @@ class NodeService {
                     switch (authType) {
                         case "bearer":
                             const bearerAuthPlugin = require('fastify-bearer-auth');
-                            //register to root fastify
                             const bearer_config = authentication_config[authType];
                             //bearer_config["addHook"] = false; //so can be override by service
-                            fastify.register(bearerAuthPlugin, bearer_config);
+                            //register to service level fastify not root
+                            fastifyServiceContext.register(bearerAuthPlugin, bearer_config);
                             break;
                     }
                 }
