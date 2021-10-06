@@ -6,10 +6,10 @@ async function init(service_log) {
 }
 const hi = async (request, reply) => {
     const name = request.params != null && request.params.name != null ? request.params.name : null;
-    if(name == "error"){
+    if (name == "error") {
         throw new Error("Error")
     }
-    reply.send(`hi${name != null ? ` ${name}` : ""}`)
+    reply.send(`hi${name != null ? ` ${name}` : ""}${request.user != null ? `, ${JSON.stringify(request.user)}` : ""}`)
 }
 function close(service_log) {
     service_log.info(`close home hanlder`)

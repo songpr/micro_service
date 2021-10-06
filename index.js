@@ -45,18 +45,7 @@ class MicroServiceNode {
             const servicePath = path.dirname(require.resolve(baseDir + config.services[serviceName].config));
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
-        const authentication_config = {};
-
-        if (config.authentication != null) {
-            for (const authType of Object.keys(config.authentication)) {
-                switch (authType) {
-                    case "bearer":
-                        const bearer_config = clone(config.authentication[authType]);
-                        authentication_config.bearer = bearer_config;
-                        break;
-                }
-            }
-        }
+        const authentication_config = clone(config.authentication);
         const schemas = []
         if (config.schema != null) {
             const schema_config = clone(config.schema);
@@ -179,6 +168,37 @@ class NodeService {
                             await fastifyServiceContext.after();//wait for register to complete first before add 
                             auth_verify_functions.push(fastifyServiceContext.verifyBearerAuth);
                             break;
+                        case "jwt":
+                            const jwt_config = authentication_config[authType];
+                            const jwt_options = {
+                                secret: {
+                                    private: Buffer.from(jwt_config.secret.private_base64, 'base64').toString('utf8'),
+                                    public: Buffer.from(jwt_config.secret.public_base64, 'base64').toString('utf8')
+                                }, formatUser: (user) => {
+                                    return {
+                                        id: user.id,
+                                        platform: user.platform != null ? user.platform : null
+                                    }
+                                }
+                            }
+                            if (jwt_config.sign != null) {
+                                jwt_options.sign = jwt_config.sign;
+                            }
+                            if (jwt_config.verify != null) {
+                                jwt_options.verify = jwt_config.verify;
+                            }
+                            console.log(jwt_options);
+                            fastifyServiceContext.register(require("fastify-jwt"), jwt_options);
+                            await fastifyServiceContext.after();//wait for register to complete first before add 
+                            fastifyServiceContext.decorate("verifyJWT", async function (request, reply, done) {
+                                try {
+                                    await request.jwtVerify();
+                                } catch (err) {
+                                    done(err);
+                                }
+                            });
+                            auth_verify_functions.push(fastifyServiceContext.verifyJWT);
+                            break;
                     }
                 }
 
@@ -211,6 +231,7 @@ class NodeService {
                     await fastifyServiceContext.route(route);
                     serviceInstance.log.debug({ service: serviceInstance.name, route: route.url, status: "initialized" })
                 }
+                await fastifyServiceContext.after();
             } catch (fastifyRegisterError) {
                 serviceInstance.log.error({ error: `error while in fastify register`, stack: fastifyRegisterError.stack });
                 error.fastifyRegisterError = fastifyRegisterError;
@@ -230,6 +251,7 @@ class NodeService {
     }
 }
 const NodeServiceHandler = require("./ServiceHandler");
+const { config } = require("process");
 
 /**
  * shut down properly

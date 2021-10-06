@@ -99,10 +99,40 @@
         },
         "JWTAuth": {
             "type": "object",
-            "additionalProperties": true,
+            "additionalProperties": false,
             "properties": {
                 "secret": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "private_base64": {
+                            "type": "string"
+                        },
+                        "public_base64": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "sign": {
+                    "type": "object",
+                    "properties": {
+                        "algorithm": {
+                            "type": "string"
+                        },
+                        "issuer": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "verify": {
+                    "type": "object",
+                    "properties": {
+                        "issuer": {
+                            "type": "string"
+                        },
+                        "audience": {
+                            "type": "string"
+                        }
+                    }
                 }
             },
             "required": [

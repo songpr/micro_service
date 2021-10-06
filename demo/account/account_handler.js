@@ -5,8 +5,8 @@ async function init(service_log) {
     service_log.info({ line_handler_config: this.config })
 }
 const getToken = async (request, reply) => {
-    reply.send({ statusCode: 200, data: { token: "ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG" } });
-    return;
+    const token = await reply.jwtSign({ id: "aaa" });
+    return reply.send({ statusCode: 200, data: { token, expired_at: new Date(Date.now() + 40000) } });
 }
 function close(service_log) {
     service_log.info(`close line hanlder`)

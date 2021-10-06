@@ -1,5 +1,5 @@
 GET http://localhost:3000/Home/Song
-Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
+Authorization: Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFhYSIsImlhdCI6MTYzMzU0MjE2NiwiaXNzIjoiYXBpLmRlbW8udGxkIn0.KwvjtocL6a8t-RsPMR3scBak2IlJjAk9cvdCmhDKYQ0dmiVVc1xRcBnmfadUXKcqxI6EH3oFVlG3TeABOFCqlA
 
 ###
 GET http://localhost:3000/Home/รัน
