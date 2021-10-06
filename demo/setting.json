@@ -24,7 +24,7 @@
             "url": "http://localhost",
             "authentication": {
                 "bearer": {
-                    "key": "${services_primary_auth_key}"
+                    "key": "${services_secondary_auth_key}"
                 }
             },
             "active": true
