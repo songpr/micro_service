@@ -20,7 +20,7 @@ const util = require("./lib/util");
 class MicroServiceNode {
     constructor(json_config, baseDir) {
         //if pass json string then parse and replace envs first
-        const config_object = typeof(json_config) == "string"? JSON.parse(util.replaceByEnv(json_config)):json_config
+        const config_object = typeof (json_config) == "string" ? JSON.parse(util.replaceByEnv(json_config)) : json_config
         const valid = nodeOptionsSchemaValidate(config_object)
         if (!valid) {
             const errors = nodeOptionsSchemaValidate.errors
@@ -159,23 +159,34 @@ class NodeService {
     async start(fastify, node_authentication_config) {
         const serviceInstance = this;
         const error = {};
+
         fastify.register(async (fastifyServiceContext) => {
             try {
                 const service_handler_config = JSON.parse(JSON.stringify(this.config)); //copy config
-                //merge both
+                //merge both, same auth will be replaced by service level
                 const authentication_config = { ...(node_authentication_config != null ? node_authentication_config : {}), ...service_handler_config.service.authentication != null ? service_handler_config.service.authentication : {} };
+                const auth_verify_functions = [];
                 for (const authType of Object.keys(authentication_config)) {
                     switch (authType) {
                         case "bearer":
                             const bearerAuthPlugin = require('fastify-bearer-auth');
                             const bearer_config = authentication_config[authType];
-                            //bearer_config["addHook"] = false; //so can be override by service
+                            bearer_config["addHook"] = false; //so can be override by service
                             //register to service level fastify not root
                             fastifyServiceContext.register(bearerAuthPlugin, bearer_config);
+                            await fastifyServiceContext.after();//wait for register to complete first before add 
+                            auth_verify_functions.push(fastifyServiceContext.verifyBearerAuth);
                             break;
                     }
                 }
-                delete service_handler_config.service;//remove service config since it use for service only
+
+                //register as hook so it affect while service (all routes below)
+                if (auth_verify_functions.length > 0) {
+                    fastifyServiceContext.register(require('fastify-auth'));
+                    await fastifyServiceContext.after();
+                    fastifyServiceContext.addHook('preHandler', fastifyServiceContext.auth(auth_verify_functions))
+                }
+                delete service_handler_config.service;//remove service config since it use for fastify service only
                 Object.freeze(service_handler_config);// freeze config
                 serviceInstance.log.debug({ routes: serviceInstance.config.service.routes })
                 for (const orgRoute of serviceInstance.config.service.routes) {

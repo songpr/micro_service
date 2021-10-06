@@ -13,15 +13,7 @@
             "url": "http://localhost",
             "authentication": {
                 "bearer": {
-                    "keys": [
-                        "${services_primary_auth_key}"
-                    ]
-                },
-                "jwt": {
-                    "secret": {
-                        "private_base64": "${private_key_base64}",
-                        "public_base64": "${public_key_base64}"
-                    }
+                    "key": "${services_primary_auth_key}"
                 }
             },
             "active": true
@@ -32,9 +24,7 @@
             "url": "http://localhost",
             "authentication": {
                 "bearer": {
-                    "keys": [
-                        "${services_primary_auth_key}"
-                    ]
+                    "key": "${services_primary_auth_key}"
                 }
             },
             "active": true

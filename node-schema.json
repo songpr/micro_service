@@ -266,7 +266,16 @@
                     "format": "uri-reference"
                 },
                 "authentication": {
-                    "$ref": "#/definitions/NodeOptionsAuthentication"
+                    "type": "object",
+                    "patternProperties": {
+                        "^.*": {
+                            "oneOf": [
+                                {
+                                    "$ref": "#/definitions/ServiceBearerAuthentication"
+                                }
+                            ]
+                        }
+                    }
                 },
                 "active": {
                     "type": "boolean"
