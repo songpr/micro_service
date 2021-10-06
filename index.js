@@ -15,8 +15,12 @@ function clone(object) {
     return JSON.parse(JSON.stringify(object));
 
 }
+const util = require("./lib/util");
+
 class MicroServiceNode {
-    constructor(config_object, baseDir) {
+    constructor(json_config, baseDir) {
+        //if pass json string then parse and replace envs first
+        const config_object = typeof(json_config) == "string"? JSON.parse(util.replaceByEnv(json_config)):json_config
         const valid = nodeOptionsSchemaValidate(config_object)
         if (!valid) {
             const errors = nodeOptionsSchemaValidate.errors
