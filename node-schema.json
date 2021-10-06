@@ -62,10 +62,22 @@
             "properties": {
                 "bearer": {
                     "$ref": "#/definitions/BearerAuth"
+                },
+                "jwt": {
+                    "$ref": "#/definitions/JWTAuth"
                 }
             },
-            "required": [
-                "bearer"
+            "anyOf": [
+                {
+                    "required": [
+                        "bearer"
+                    ]
+                },
+                {
+                    "required": [
+                        "jwt"
+                    ]
+                }
             ],
             "title": "NodeOptionsAuthentication"
         },
@@ -84,6 +96,19 @@
                 "keys"
             ],
             "title": "Bearer"
+        },
+        "JWTAuth": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "secret": {
+                    "type": "object"
+                }
+            },
+            "required": [
+                "secret"
+            ],
+            "title": "JWT"
         },
         "Database": {
             "type": "object",
@@ -241,16 +266,7 @@
                     "format": "uri-reference"
                 },
                 "authentication": {
-                    "type": "object",
-                    "patternProperties": {
-                        "^.*": {
-                            "oneOf": [
-                                {
-                                    "$ref": "#/definitions/ServiceBearerAuthentication"
-                                }
-                            ]
-                        }
-                    }
+                    "$ref": "#/definitions/NodeOptionsAuthentication"
                 },
                 "active": {
                     "type": "boolean"

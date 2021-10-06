@@ -13,7 +13,15 @@
             "url": "http://localhost",
             "authentication": {
                 "bearer": {
-                    "key": "${services_primary_auth_key}"
+                    "keys": [
+                        "${services_primary_auth_key}"
+                    ]
+                },
+                "jwt": {
+                    "secret": {
+                        "private_base64": "${private_key_base64}",
+                        "public_base64": "${public_key_base64}"
+                    }
                 }
             },
             "active": true
@@ -24,7 +32,9 @@
             "url": "http://localhost",
             "authentication": {
                 "bearer": {
-                    "key": "${services_primary_auth_key}"
+                    "keys": [
+                        "${services_primary_auth_key}"
+                    ]
                 }
             },
             "active": true
@@ -36,6 +46,12 @@
             "keys": [
                 "${services_primary_auth_key}"
             ]
+        },
+        "jwt": {
+            "secret": {
+                "private_base64": "${private_key_base64}",
+                "public_base64": "${public_key_base64}"
+            }
         }
     },
     "fastify.options note": "specify fastify option here",
