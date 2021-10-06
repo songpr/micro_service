@@ -16,6 +16,7 @@ function clone(object) {
 
 }
 const util = require("./lib/util");
+const fs = require("fs");
 
 class MicroServiceNode {
     constructor(json_config, baseDir) {
@@ -39,7 +40,8 @@ class MicroServiceNode {
         Object.defineProperty(this, 'services', { get: () => services, enumerable: true });
         for (const serviceName of Object.keys(config.services)) {
             if (config.services[serviceName].active !== true) continue; //ignore in active service
-            const serviceconfig = Object.freeze(require(baseDir + config.services[serviceName].config));
+            const serviceconfig_string = fs.readFileSync(baseDir + config.services[serviceName].config, { encoding: 'utf8', flag: 'r' });
+            const serviceconfig = Object.freeze(JSON.parse(util.replaceByEnv(serviceconfig_string)));
             const servicePath = path.dirname(require.resolve(baseDir + config.services[serviceName].config));
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
