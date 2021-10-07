@@ -17,7 +17,7 @@ const mysql_config =
     },
     "monitor": {
         "note": "the test sql will run to monitor mysql, if fail the exception will be throw. so it must be fast and quick check",
-        "test_sql": "SELECT 1 from users limit 1"
+        "test_sql": "SELECT 1"
     }
 }`
 const fs = require("fs");
@@ -40,7 +40,7 @@ test("test mysql escapeJson", async () => {
     }
     //console.log(mysql_config_object.pool);
     const mysql = new MySQLDatabaseService(mysql_config_object);
-    expect(mysql.escapeJson(["1","2",3])).toEqual(`["1","2",3]`);
-    expect(mysql.escapeJson({name:'John'})).toEqual(`{"name":"John"}`);
-    expect(mysql.escapeJson({birthday:new Date("2010-10-10 10:10")})).toEqual(`{"birthday":"2010-10-10 10:10:00.000"}`);
+    expect(mysql.escapeJson(["1", "2", 3])).toEqual(`["1","2",3]`);
+    expect(mysql.escapeJson({ name: 'John' })).toEqual(`{"name":"John"}`);
+    expect(mysql.escapeJson({ birthday: new Date("2010-10-10 10:10") })).toEqual(`{"birthday":"2010-10-10 10:10:00.000"}`);
 })
