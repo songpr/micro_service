@@ -120,17 +120,59 @@
                         },
                         "issuer": {
                             "type": "string"
+                        },
+                        "audience": {
+                            "type": "string"
+                        },
+                        "subject": {
+                            "type": "string"
+                        },
+                        "expiresIn": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer",
+                                    "minimum": 1
+                                }
+                            ]
+                        },
+                        "notBefore": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer",
+                                    "minimum": 1
+                                }
+                            ]
                         }
                     }
                 },
                 "verify": {
                     "type": "object",
                     "properties": {
+                        "algorithm": {
+                            "type": "array",
+                            "minLength": 1,
+                            "items": {
+                                "type": "string"
+                            }
+                        },
                         "issuer": {
                             "type": "string"
                         },
                         "audience": {
                             "type": "string"
+                        },
+                        "subject": {
+                            "type": "string"
+                        },
+                        "clockTolerance": {
+                            "type": "integer",
+                            "minimum": 1
                         }
                     }
                 }

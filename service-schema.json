@@ -127,10 +127,22 @@
             "properties": {
                 "bearer": {
                     "$ref": "#/definitions/BearerAuth"
+                },
+                "jwt": {
+                    "$ref": "#/definitions/JWTAuth"
                 }
             },
-            "required": [
-                "bearer"
+            "anyOf": [
+                {
+                    "required": [
+                        "bearer"
+                    ]
+                },
+                {
+                    "required": [
+                        "jwt"
+                    ]
+                }
             ],
             "title": "NodeOptionsAuthentication"
         },
@@ -149,6 +161,91 @@
                 "keys"
             ],
             "title": "Bearer"
+        },
+        "JWTAuth": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "secret": {
+                    "type": "object",
+                    "properties": {
+                        "private_base64": {
+                            "type": "string"
+                        },
+                        "public_base64": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "sign": {
+                    "type": "object",
+                    "properties": {
+                        "algorithm": {
+                            "type": "string"
+                        },
+                        "issuer": {
+                            "type": "string"
+                        },
+                        "audience": {
+                            "type": "string"
+                        },
+                        "subject": {
+                            "type": "string"
+                        },
+                        "expiresIn": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer",
+                                    "minimum": 1
+                                }
+                            ]
+                        },
+                        "notBefore": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer",
+                                    "minimum": 1
+                                }
+                            ]
+                        }
+                    }
+                },
+                "verify": {
+                    "type": "object",
+                    "properties": {
+                        "algorithm": {
+                            "type": "array",
+                            "minLength": 1,
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "issuer": {
+                            "type": "string"
+                        },
+                        "audience": {
+                            "type": "string"
+                        },
+                        "subject": {
+                            "type": "string"
+                        },
+                        "clockTolerance": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    }
+                }
+            },
+            "required": [
+                "secret"
+            ],
+            "title": "JWT"
         },
         "Logger": {
             "type": "object",

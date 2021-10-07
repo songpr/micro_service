@@ -44,7 +44,8 @@
             },
             "sign": {
                 "algorithm": "ES256",
-                "issuer": "api.demo.tld"
+                "issuer": "api.demo.tld",
+                "expiresIn": "30s"
             },
             "verify": {
                 "issuer": "api.demo.tld",
