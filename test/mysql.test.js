@@ -1,7 +1,7 @@
 const { MySQLDatabaseService } = require("../DatabaseService");
 const util = require("../lib/util")
 const mysql_config =
-`{    
+    `{    
     "pool": {
         "connectionLimit": "%{db_connectionLimit}",
         "queueLimit": 40000,
@@ -20,8 +20,14 @@ const mysql_config =
         "test_sql": "SELECT 1 from users limit 1"
     }
 }`
+const fs = require("fs");
 test("test mysql service", async () => {
-    const mysql = new MySQLDatabaseService(JSON.parse(util.replaceByEnv(mysql_config)));
+    const mysql_config_object = JSON.parse(util.replaceByEnv(mysql_config));
+    if (mysql_config_object.pool.ssl.ca != null) {
+        mysql_config_object.pool.ssl.ca = fs.readFileSync(__dirname + mysql_config_object.pool.ssl.ca, { encoding: "utf8", flag: "r" });
+    }
+    console.log(mysql_config_object.pool);
+    const mysql = new MySQLDatabaseService(mysql_config_object);
     await mysql.start();
     await mysql.close();
 })
