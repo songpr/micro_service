@@ -197,7 +197,7 @@
         },
         "Mysql": {
             "type": "object",
-            "additionalProperties": false,
+            "additionalProperties": true,
             "title": "Mysql"
         },
         "Fastify": {
