@@ -2,12 +2,12 @@ const util = require("util");
 class NodeServiceHandler {
     async init(service_handler_config, service_log) {
         //make sure init of the same instance will be called only once
-        if (this.isInit === true) {
+        if (this.isInited === true) {
             return;
         }
         else {
             const init = true;
-            Object.defineProperty(this, 'isInit', { get: () => init, enumerable: true });
+            Object.defineProperty(this, 'isInited', { get: () => init, enumerable: true });
             Object.defineProperty(this, 'config', { get: () => service_handler_config, enumerable: true });
         }
         if (this.initHandler != null) {

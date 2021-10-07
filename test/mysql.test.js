@@ -26,8 +26,21 @@ test("test mysql service", async () => {
     if (mysql_config_object.pool.ssl.ca != null) {
         mysql_config_object.pool.ssl.ca = fs.readFileSync(__dirname + mysql_config_object.pool.ssl.ca, { encoding: "utf8", flag: "r" });
     }
-    console.log(mysql_config_object.pool);
+    //console.log(mysql_config_object.pool);
     const mysql = new MySQLDatabaseService(mysql_config_object);
     await mysql.start();
     await mysql.close();
+})
+
+
+test("test mysql escapeJson", async () => {
+    const mysql_config_object = JSON.parse(util.replaceByEnv(mysql_config));
+    if (mysql_config_object.pool.ssl.ca != null) {
+        mysql_config_object.pool.ssl.ca = fs.readFileSync(__dirname + mysql_config_object.pool.ssl.ca, { encoding: "utf8", flag: "r" });
+    }
+    //console.log(mysql_config_object.pool);
+    const mysql = new MySQLDatabaseService(mysql_config_object);
+    expect(mysql.escapeJson(["1","2",3])).toEqual(`["1","2",3]`);
+    expect(mysql.escapeJson({name:'John'})).toEqual(`{"name":"John"}`);
+    expect(mysql.escapeJson({birthday:new Date("2010-10-10 10:10")})).toEqual(`{"birthday":"2010-10-10 10:10:00.000"}`);
 })
