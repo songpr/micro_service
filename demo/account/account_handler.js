@@ -6,7 +6,7 @@ async function init(service_log) {
 }
 const getToken = async (request, reply) => {
     const token = await reply.jwtSign({ id: "aaa" });
-    return reply.send({ statusCode: 200, data: { token, expired_at: new Date(Date.now() + 40000) } });
+    return reply.send({ statusCode: 200, data: { token, expired_at: new Date(Date.now() + 180000) } });
 }
 function close(service_log) {
     service_log.info(`close line hanlder`)

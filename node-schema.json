@@ -16,6 +16,10 @@
                 "services": {
                     "$ref": "#/definitions/Services"
                 },
+                "cors":{
+                    "type":"object",
+                    "additionalProperties": true
+                },
                 "authentication_note": {
                     "type": "string"
                 },

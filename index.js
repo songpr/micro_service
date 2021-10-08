@@ -100,6 +100,11 @@ class MicroServiceNode {
         this.log.info(`Start node.`);
         // start all servicee
         this.log.debug({ services_size: this.services.size });
+        if (this.config.cors != null) {
+            this.fastify.register(require("fastify-cors"), this.config.cors);
+            this.log.info(`support cors on ${this.config.cors.origin}`)
+            await this.fastify.after();
+        }
         for (const service of this.services) {
             this.log.debug({ start_service: service.config.service.baseURL });
             await service.start(this.fastify, this.authentication_config);
@@ -187,7 +192,6 @@ class NodeService {
                             if (jwt_config.verify != null) {
                                 jwt_options.verify = jwt_config.verify;
                             }
-                            console.log(jwt_options);
                             fastifyServiceContext.register(require("fastify-jwt"), jwt_options);
                             await fastifyServiceContext.after();//wait for register to complete first before add 
                             fastifyServiceContext.decorate("verifyJWT", async function (request, reply, done) {
