@@ -9,12 +9,12 @@ Content-Type: application/json
 }
 
 ###
-POST  https://8a5f-49-0-65-155.ngrok.io/Account/token
+POST  https://3e49-49-0-65-155.ngrok.io/Account/token
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
     "line_login":{
-        "access_token":"test"
+        "id_token":"test"
     }
 }
