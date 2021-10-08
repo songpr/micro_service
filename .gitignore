@@ -105,3 +105,6 @@ dist
 
 #key
 .keys/
+
+#vscode
+.vscode/

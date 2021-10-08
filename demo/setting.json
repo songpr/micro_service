@@ -31,7 +31,7 @@
         }
     },
     "cors": {
-        "origin": ["https://b517-2405-9800-ba01-151b-2070-8a68-5a7-575.ngrok.io"]
+        "origin": ["https://cc99-2405-9800-ba01-151b-2070-8a68-5a7-575.ngrok.io"]
     },
     "authentication_note": "node authentication, each property is a auth method order by setting. auth can be overrided by service authentication",
     "authentication": {

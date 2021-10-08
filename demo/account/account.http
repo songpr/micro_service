@@ -1,5 +1,5 @@
-POST http://localhost:3000/Account/token
-Authorization: Bearer ZjAyWf2aJ38uLnhThZZGKxm43sPtyngmwPnPz3eRymkPq8yiZXGNuZxLTKXZheVx
+POST {{baseurl}}/Account/token
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 
 ###
 POST  https://8a5f-49-0-65-155.ngrok.io/Account/token
-Authorization: Bearer ZjAyWf2aJ38uLnhThZZGKxm43sPtyngmwPnPz3eRymkPq8yiZXGNuZxLTKXZheVx
+Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {

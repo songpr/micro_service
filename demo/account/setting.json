@@ -55,13 +55,6 @@
         ],
         "logger": {
             "level": "debug"
-        },
-        "authentication": {
-            "bearer": {
-                "keys": [
-                    "${services_secondary_auth_key}"
-                ]
-            }
         }
     }
 }

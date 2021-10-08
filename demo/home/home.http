@@ -1,14 +1,30 @@
-GET http://localhost:3000/Home/Song
-Authorization: Bearer eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFhYSIsImlhdCI6MTYzMzU3NDU0NSwiZXhwIjoxNjMzNTc0NTc1LCJpc3MiOiJhcGkuZGVtby50bGQifQ.7rVVnen8o9a3CAaYOFyEAIPXBOPEGAOk7QWFuQl85OwAsGb0RglGFUudPgsQS4gVh3p25ErYFicCW8B9HHhk-A
+###
+# @name GET_IDTOKEN
+POST {{baseurl}}/Account/token
+Authorization: Bearer {{access_token}}
+Content-Type: application/json
+
+{
+    "line_login":{
+        "access_token":"test"
+    }
+}
 
 ###
-GET http://localhost:3000/Home/รัน
-Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
+@id-token = {{GET_IDTOKEN.response.body.$.data.token}}
+###
+
+GET {{baseurl}}/Home/Song
+Authorization: Bearer {{id-token}}
+
+###
+GET {{baseurl}}/Home/รัน
+Authorization: Bearer {{access_token}}
 
 ### error
-GET http://localhost:3000/Home/acd$
-Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
+GET {{baseurl}}/Home/acd$
+Authorization: Bearer {{access_token}}
 
 ### Error
-GET http://localhost:3000/Home/error
-Authorization: Bearer ZZVdbXF4gUbY8mQjNGqoy7p2KY2FZffGFDAKpcZcdFbztedbntkv7rjbKQrooJrG
+GET {{baseurl}}/Home/error
+Authorization: Bearer {{access_token}}
