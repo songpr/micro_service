@@ -158,9 +158,9 @@
                 "verify": {
                     "type": "object",
                     "properties": {
-                        "algorithm": {
+                        "algorithms": {
                             "type": "array",
-                            "minLength": 1,
+                            "minItems": 1,
                             "items": {
                                 "type": "string"
                             }

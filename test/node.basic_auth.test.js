@@ -86,6 +86,7 @@ test("service level auth override same auth type at node level auth", async () =
     const responseHomeKey = await clientHomeKey.get(`home_basic_auth/`);
     expect(responseHomeKey.body).toEqual("hi");
 }, 5000);
+
 afterEach(async () => {
     for (const node of activeNodes) {
         await node.close();

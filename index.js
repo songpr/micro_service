@@ -45,7 +45,7 @@ class MicroServiceNode {
             const servicePath = path.dirname(require.resolve(baseDir + config.services[serviceName].config));
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
-        const authentication_config = clone(config.authentication);
+        const authentication_config = config.authentication != null ? clone(config.authentication) : {};
         const schemas = []
         if (config.schema != null) {
             const schema_config = clone(config.schema);
@@ -118,13 +118,16 @@ class MicroServiceNode {
     }
 
     async close() {
-        this.log.info(`closing '${this.name}' node and it's services.`);
-        const serviceClosePromises = [];
-        for (const service of this.services) {
-            serviceClosePromises.push(service.close())
+        try {
+            this.log.info(`closing '${this.name}' node and it's services.`);
+            const serviceClosePromises = [];
+            for (const service of this.services) {
+                serviceClosePromises.push(service.close())
+            }
+            await Promise.all(serviceClosePromises);
+        }finally{
+            await this.fastify.close();
         }
-        await Promise.all(serviceClosePromises);
-        await this.fastify.close();//close fastify last
     }
 }
 

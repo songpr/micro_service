@@ -4,6 +4,12 @@ class DatabaseService {
         const _config = Object.freeze(config);
         Object.defineProperty(this, 'config', { get: () => _config, enumerable: true });
     }
+    /**
+     * type of database, class must extend this method
+     */
+    get type() {
+        throw new Error("Invalid database type");
+    }
     async start() {
         //make sure init of the same instance will be called only once
         if (this.isStarted === true) {
@@ -56,6 +62,12 @@ class MySQLDatabaseService extends DatabaseService {
             configurable: false
         })
     }
+
+    /**
+     * type of database
+     */
+    get type() { return "mysql" };
+
     async start() {
         if (this.isStarted === true) {
             return;
@@ -82,6 +94,9 @@ class MySQLDatabaseService extends DatabaseService {
         return this._promisePool;
     }
 
+    /**
+     * escape JSON to be 
+     */
     escapeJson(json) {
         return JSON.stringify(json, jsonDateReplacer)
     }

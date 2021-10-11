@@ -28,6 +28,7 @@ test("test mysql service", async () => {
     }
     //console.log(mysql_config_object.pool);
     const mysql = new MySQLDatabaseService(mysql_config_object);
+    expect(mysql.type).toEqual("mysql");
     await mysql.start();
     await mysql.close();
 })
