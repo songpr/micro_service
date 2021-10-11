@@ -1,7 +1,7 @@
 const util = require("util");
-const DatabaseService = require("./DatabaseService");
+const { DatabaseService } = require("./DatabaseService");
 class NodeServiceHandler {
-    async init(service_handler_config, serviceLog, databaseService = null) {
+    async init(service_handler_config, serviceLog, databaseServices = null) {
         //make sure init of the same instance will be called only once
         if (this.isInited === true) {
             return;
@@ -14,9 +14,11 @@ class NodeServiceHandler {
         if (this.initHandler != null) {
             const initResult = util.types.isAsyncFunction(this.initHandler) ? await this.initHandler(serviceLog) : this.initHandler(serviceLog);
         }
-        if (databaseService != null && databaseService instanceof DatabaseService) {
-            const _databaseService = Object.freeze(databaseService);
-            Object.defineProperty(this, databaseService.type, { get: () => _databaseService, enumerable: true });
+        if (Array.isArray(databaseServices)) {
+            for (const dbService of databaseServices) {
+                if (!(dbService instanceof DatabaseService)) continue;
+                Object.defineProperty(this, dbService.type, { get: () => dbService, enumerable: true });
+            }
         }
     }
     async close(serviceLog) {

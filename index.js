@@ -46,9 +46,44 @@ class MicroServiceNode {
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
         const authentication_config = config.authentication != null ? clone(config.authentication) : {};
+
+        Object.defineProperty(this, 'authentication_config', { get: () => authentication_config, enumerable: false });
+        Object.defineProperty(this, 'baseDir', { get: () => baseDir, enumerable: true });
+        Object.defineProperty(this, 'name', { get: () => config.node.name, enumerable: true });
+        log.info(`Load node options successfully.`);
+    }
+    /**
+     * start node
+     */
+    async start() {
+        //register all fastify's plug in here
+        const fastify = this.fastify;
+        this.log.info(`Start node.`);
+        // start all servicee
+        this.log.debug({ services_size: this.services.size });
+        const dbServices = [];
+        if (this.config.database != null) {
+            const dbs = Object.keys(this.config.database);
+            for (const db of dbs) {
+                switch (db) {
+                    case "mysql":
+                        const mysql_config_object = clone(this.config.database.mysql);
+                        if (mysql_config_object.pool.ssl.ca != null) {
+                            mysql_config_object.pool.ssl.ca = fs.readFileSync(this.baseDir + mysql_config_object.pool.ssl.ca);
+                        }
+                        const { MySQLDatabaseService } = new require("./DatabaseService");
+                        const mysql = new MySQLDatabaseService(mysql_config_object);
+                        await mysql.start();
+                        dbServices.push(mysql);
+                        this.log.info({ mysql: "mysql start successfully" });
+                        break;
+                }
+            }
+        }
+        const serviceStartPromises = [];
         const schemas = []
-        if (config.schema != null) {
-            const schema_config = clone(config.schema);
+        if (this.config.schema != null) {
+            const schema_config = clone(this.config.schema);
             if (schema_config.use_basic === true) {
                 const base_service_schema = require(__dirname + "/basic-schema_for_route.json");
                 fastify.addSchema(base_service_schema);
@@ -57,16 +92,15 @@ class MicroServiceNode {
             delete schema_config.use_basic;
             if (schema_config.config != null) {
                 for (const [a_schema_name, a_schema_config_path] of Object.entries(schema_config.config)) {
-                    const a_schema = require(baseDir + a_schema_config_path);
+                    const a_schema = require(this.baseDir + a_schema_config_path);
                     fastify.addSchema(a_schema);
                     schemas.push(a_schema)
                 }
             }
         }
-
-        if (config.swagger != null) {
+        if (this.config.swagger != null) {
             const swagger = require("fastify-swagger");
-            const swagger_config = clone(config.swagger);
+            const swagger_config = clone(this.config.swagger);
             const routePrefix = swagger_config.routePrefix;
             delete swagger_config.routePrefix;
             fastify.register(swagger, {
@@ -91,28 +125,22 @@ class MicroServiceNode {
             })
 
         }
-        Object.defineProperty(this, 'authentication_config', { get: () => authentication_config, enumerable: false });
-        Object.defineProperty(this, 'baseDir', { get: () => baseDir, enumerable: true });
-        Object.defineProperty(this, 'name', { get: () => config.node.name, enumerable: true });
-        log.info(`Load node options successfully.`);
-    }
-    async start() {
-        this.log.info(`Start node.`);
-        // start all servicee
-        this.log.debug({ services_size: this.services.size });
-        if (this.config.cors != null) {
-            this.fastify.register(require("fastify-cors"), this.config.cors);
-            this.log.info(`support cors on ${this.config.cors.origin}`)
-            await this.fastify.after();
-        }
+        await fastify.after();
         for (const service of this.services) {
             this.log.debug({ start_service: service.config.service.baseURL });
-            await service.start(this.fastify, this.authentication_config);
+            await service.start(this.fastify, this.authentication_config, dbServices);
         }
+        await Promise.all(serviceStartPromises);
+        if (this.config.cors != null) {
+            fastify.register(require("fastify-cors"), this.config.cors);
+            this.log.info(`support cors on ${this.config.cors.origin}`);
+            await fastify.after();
+        }
+
         this.log.info(`Start all service.`);
-        await this.fastify.ready();
-        this.log.info(`fastiy ready.`);
-        await this.fastify.listen(this.config.node.port, this.config.node.listen);
+        await fastify.ready();
+        this.log.debug(`fastiy ready.`);
+        await fastify.listen(this.config.node.port, this.config.node.listen);
         activeNodes.add(this);// add after start successfully
         this.log.info(`Start node successfully.`);
     }
@@ -125,7 +153,7 @@ class MicroServiceNode {
                 serviceClosePromises.push(service.close())
             }
             await Promise.all(serviceClosePromises);
-        }finally{
+        } finally {
             await this.fastify.close();
         }
     }
@@ -155,13 +183,14 @@ class NodeService {
         Object.defineProperty(this, 'path', { get: () => path, enumerable: true });
 
     }
-    async start(fastify, node_authentication_config) {
+    async start(fastify, node_authentication_config, dbServices) {
         const serviceInstance = this;
+        const databaseService = dbServices;
         const error = {};
 
         fastify.register(async (fastifyServiceContext) => {
             try {
-                const service_handler_config = JSON.parse(JSON.stringify(this.config)); //copy config
+                const service_handler_config = JSON.parse(JSON.stringify(serviceInstance.config)); //copy config
                 //merge both, same auth will be replaced by service level
                 const authentication_config = { ...(node_authentication_config != null ? node_authentication_config : {}), ...service_handler_config.service.authentication != null ? service_handler_config.service.authentication : {} };
                 const auth_verify_functions = [];
@@ -234,7 +263,7 @@ class NodeService {
                     }
                     serviceInstance.log.debug("Load function successfully");
                     route.handler = obj_handler[funcName];
-                    await obj_handler.init(service_handler_config, serviceInstance.log);
+                    await obj_handler.init(service_handler_config, serviceInstance.log, databaseService);
                     await fastifyServiceContext.route(route);
                     serviceInstance.log.debug({ service: serviceInstance.name, route: route.url, status: "initialized" })
                 }

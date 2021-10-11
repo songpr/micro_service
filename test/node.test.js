@@ -93,5 +93,5 @@ afterEach(async () => {
     for (const node of activeNodes) {
         await node.close();
     }
-    await new Promise(resolve => setTimeout(resolve, 200));//wait for port to be cleared to fix issue port in use for each test
+    await new Promise(resolve => setTimeout(resolve, 500));//wait for port to be cleared to fix issue port in use for each test
 })
