@@ -11,14 +11,16 @@ class NodeServiceHandler {
             Object.defineProperty(this, 'isInited', { get: () => init, enumerable: true });
             Object.defineProperty(this, 'config', { get: () => service_handler_config, enumerable: true });
         }
-        if (this.initHandler != null) {
-            const initResult = util.types.isAsyncFunction(this.initHandler) ? await this.initHandler(serviceLog) : this.initHandler(serviceLog);
-        }
+
         if (Array.isArray(databaseServices)) {
             for (const dbService of databaseServices) {
                 if (!(dbService instanceof DatabaseService)) continue;
                 Object.defineProperty(this, dbService.type, { get: () => dbService, enumerable: true });
             }
+        }
+        // init handler last so it can use others services that have been initialized.
+        if (this.initHandler != null) {
+            const initResult = util.types.isAsyncFunction(this.initHandler) ? await this.initHandler(serviceLog) : this.initHandler(serviceLog);
         }
     }
     async close(serviceLog) {
