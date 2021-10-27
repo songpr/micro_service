@@ -41,7 +41,7 @@ class MicroServiceNode {
         for (const serviceName of Object.keys(config.services)) {
             if (config.services[serviceName].active !== true) continue; //ignore in active service
             const serviceconfig_string = fs.readFileSync(baseDir + config.services[serviceName].config, { encoding: 'utf8', flag: 'r' });
-            const serviceconfig = Object.freeze(JSON.parse(util.replaceByEnv(serviceconfig_string)));
+            const serviceconfig = JSON.parse(util.replaceByEnv(serviceconfig_string));//not freeze on service config up to service to freeze it
             const servicePath = path.dirname(require.resolve(baseDir + config.services[serviceName].config));
             services.add(new NodeService(serviceName, serviceconfig, servicePath));
         }
@@ -245,7 +245,7 @@ class NodeService {
                     fastifyServiceContext.addHook('preHandler', fastifyServiceContext.auth(auth_verify_functions))
                 }
                 delete service_handler_config.service;//remove service config since it use for fastify service only
-                Object.freeze(service_handler_config);// freeze config
+                //Object.freeze(service_handler_config);// freeze config
                 serviceInstance.log.debug({ routes: serviceInstance.config.service.routes })
                 for (const orgRoute of serviceInstance.config.service.routes) {
                     const route = JSON.parse(JSON.stringify(orgRoute));//copy since we gonna change it
