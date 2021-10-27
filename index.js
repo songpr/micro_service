@@ -244,7 +244,7 @@ class NodeService {
                     await fastifyServiceContext.after();
                     fastifyServiceContext.addHook('preHandler', fastifyServiceContext.auth(auth_verify_functions))
                 }
-                delete service_handler_config.service;//remove service config since it use for fastify service only
+                delete service_handler_config.service.routes;//remove service config since it use for fastify service only
                 //Object.freeze(service_handler_config);// freeze config
                 serviceInstance.log.debug({ routes: serviceInstance.config.service.routes })
                 for (const orgRoute of serviceInstance.config.service.routes) {
