@@ -338,10 +338,13 @@ signalTraps.map(type => {
         }
     })
 })
+const { MySQLDatabaseService } = require("./DatabaseService");
 module.exports = {
     mserviceNode:
         (options, baseDir) => {
             return new MicroServiceNode(options, baseDir)
         },
-    ServiceHandler: NodeServiceHandler
+    ServiceHandler: NodeServiceHandler,
+    MySQLDatabaseService,
+    util
 };
