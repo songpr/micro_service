@@ -197,8 +197,9 @@ class NodeService {
                 for (const authType of Object.keys(authentication_config)) {
                     switch (authType) {
                         case "bearer":
-                            const bearerAuthPlugin = require('fastify-bearer-auth');
                             const bearer_config = authentication_config[authType];
+                            if (bearer_config == null) break;
+                            const bearerAuthPlugin = require('fastify-bearer-auth');
                             bearer_config["addHook"] = false; //so can be override by service
                             //register to service level fastify not root
                             fastifyServiceContext.register(bearerAuthPlugin, bearer_config);
@@ -207,6 +208,7 @@ class NodeService {
                             break;
                         case "jwt":
                             const jwt_config = authentication_config[authType];
+                            if (jwt_config == null) break;
                             const jwt_options = {
                                 secret: {
                                     private: Buffer.from(jwt_config.secret.private_base64, 'base64').toString('utf8'),
