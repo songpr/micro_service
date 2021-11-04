@@ -1,6 +1,6 @@
 {
   "name": "mservice-node",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "minimal node micro service framework on top of fastify",
   "main": "index.js",
   "scripts": {

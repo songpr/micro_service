@@ -211,11 +211,6 @@ class NodeService {
                                 secret: {
                                     private: Buffer.from(jwt_config.secret.private_base64, 'base64').toString('utf8'),
                                     public: Buffer.from(jwt_config.secret.public_base64, 'base64').toString('utf8')
-                                }, formatUser: (user) => {
-                                    return {
-                                        id: user.id,
-                                        platform: user.platform != null ? user.platform : null
-                                    }
                                 }
                             }
                             if (jwt_config.sign != null) {
