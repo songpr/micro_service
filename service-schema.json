@@ -147,7 +147,10 @@
             "title": "NodeOptionsAuthentication"
         },
         "BearerAuth": {
-            "type": "object",
+            "type": [
+                "object",
+                "null"
+            ],
             "additionalProperties": true,
             "properties": {
                 "keys": {
@@ -163,7 +166,10 @@
             "title": "Bearer"
         },
         "JWTAuth": {
-            "type": "object",
+            "type": [
+                "object",
+                "null"
+            ],
             "additionalProperties": false,
             "properties": {
                 "secret": {
