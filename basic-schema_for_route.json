@@ -68,9 +68,19 @@
                 "type": "string"
             },
             "data": {
-                "type": "object",
-                "description": "json response data if there is any",
-                "additionalProperties": true
+                "anyOf": [
+                    {
+                        "type": "array"
+                    },
+                    {
+                        "type": "object",
+                        "description": "json response data if there is any",
+                        "additionalProperties": true
+                    },
+                    {
+                        "type": "null"
+                    }
+                ]
             }
         },
         "required": [
@@ -87,10 +97,7 @@
                 "maximum": 500
             },
             "error": {
-                "type": "string",
-                "enum": [
-                    "Internal Server Error"
-                ]
+                "type": "string"
             },
             "message": {
                 "type": "string"
