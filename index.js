@@ -223,12 +223,8 @@ class NodeService {
                             }
                             fastifyServiceContext.register(require("fastify-jwt"), jwt_options);
                             await fastifyServiceContext.after();//wait for register to complete first before add 
-                            fastifyServiceContext.decorate("verifyJWT", async function (request, reply, done) {
-                                try {
-                                    await request.jwtVerify();
-                                } catch (err) {
-                                    done(err);
-                                }
+                            fastifyServiceContext.decorate("verifyJWT", async function (request, reply) {
+                                await request.jwtVerify();
                             });
                             auth_verify_functions.push(fastifyServiceContext.verifyJWT);
                             break;
