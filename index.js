@@ -86,14 +86,14 @@ class MicroServiceNode {
             const schema_config = clone(this.config.schema);
             if (schema_config.use_basic === true) {
                 const base_service_schema = require(__dirname + "/basic-schema_for_route.json");
-                //fastify.addSchema(base_service_schema);
+                fastify.addSchema(base_service_schema);
                 schemas.push(base_service_schema)
             }
             delete schema_config.use_basic;
             if (schema_config.config != null) {
                 for (const [a_schema_name, a_schema_config_path] of Object.entries(schema_config.config)) {
                     const a_schema = require(this.baseDir + a_schema_config_path);
-                    //fastify.addSchema(a_schema);
+                    fastify.addSchema(a_schema);
                     schemas.push(a_schema)
                 }
             }
@@ -115,8 +115,8 @@ class MicroServiceNode {
                 exposeRoute: true,
                 refResolver: {
                     clone: true, // Clone the input schema without changing it. Default: false
-                    applicationUri: 'my-application.org' // You need to provide an unique URI to resolve relative `$id`s
-                    //externalSchemas: schemas // The schemas provided at the creation of the resolver, will be used evvery time `.resolve` will be called
+                    applicationUri: 'my-application.org', // You need to provide an unique URI to resolve relative `$id`s
+                    externalSchemas: schemas // The schemas provided at the creation of the resolver, will be used evvery time `.resolve` will be called
                 }
             });
             fastify.ready(err => {

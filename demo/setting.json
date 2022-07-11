@@ -52,6 +52,12 @@
         }
     },
     "schema_note": "use_basic:true by default to use base-schema_for_route.json, supply other schemas in config with field name as prefix and value as schema file path. that will prefix with <field name>. e.g. { $ref:demo.api_response } ",
+    "schema": {
+        "use_basic": true,
+        "config": {
+            "demo": "/schema.json"
+        }
+    },
     "swagger_note": "Not recommend in production server",
     "swagger": {
         "routePrefix": "/doc",

@@ -5,6 +5,13 @@
             {
                 "method": "GET",
                 "url": "/",
+                "schema": {
+                    "response": {
+                        "200": {
+                            "$ref": "demo#/api_success"
+                        }
+                    }
+                },
                 "handler": {
                     "file": "home_handler.js",
                     "function": "hi"
