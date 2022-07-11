@@ -8,7 +8,10 @@
                 "schema": {
                     "response": {
                         "200": {
-                            "$ref": "demo#/api_success"
+                            "$ref": "demo#/definitions/api_success"
+                        },
+                        "400": {
+                            "$ref": "mservice/core#/definitions/api_validate_error"
                         }
                     }
                 },
@@ -21,6 +24,24 @@
             {
                 "method": "GET",
                 "url": "/:name",
+                "schema": {
+                    "params": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "$ref": "mservice/core#/definitions/thai-eng_name"
+                            }
+                        }
+                    },
+                    "response": {
+                        "200": {
+                            "$ref": "demo#/definitions/api_success"
+                        },
+                        "400": {
+                            "$ref": "mservice/core#/definitions/api_validate_error"
+                        }
+                    }
+                },
                 "handler": {
                     "file": "home_handler.js",
                     "function": "hiUser"

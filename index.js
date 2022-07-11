@@ -105,19 +105,8 @@ class MicroServiceNode {
             delete swagger_config.routePrefix;
             fastify.register(swagger, {
                 routePrefix: routePrefix,
-                openapi: swagger_config,
-                uiConfig: {
-                    docExpansion: 'full',
-                    deepLinking: false
-                },
-                staticCSP: true,
-                transformStaticCSP: (header) => header,
-                exposeRoute: true,
-                refResolver: {
-                    clone: true, // Clone the input schema without changing it. Default: false
-                    applicationUri: 'my-application.org', // You need to provide an unique URI to resolve relative `$id`s
-                    externalSchemas: schemas // The schemas provided at the creation of the resolver, will be used evvery time `.resolve` will be called
-                }
+                swagger: swagger_config,
+                exposeRoute: true
             });
             fastify.ready(err => {
                 if (err) throw err
