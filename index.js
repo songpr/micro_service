@@ -86,20 +86,20 @@ class MicroServiceNode {
             const schema_config = clone(this.config.schema);
             if (schema_config.use_basic === true) {
                 const base_service_schema = require(__dirname + "/basic-schema_for_route.json");
-                fastify.addSchema(base_service_schema);
+                //fastify.addSchema(base_service_schema);
                 schemas.push(base_service_schema)
             }
             delete schema_config.use_basic;
             if (schema_config.config != null) {
                 for (const [a_schema_name, a_schema_config_path] of Object.entries(schema_config.config)) {
                     const a_schema = require(this.baseDir + a_schema_config_path);
-                    fastify.addSchema(a_schema);
+                    //fastify.addSchema(a_schema);
                     schemas.push(a_schema)
                 }
             }
         }
         if (this.config.swagger != null) {
-            const swagger = require("fastify-swagger");
+            const swagger = require("@fastify/swagger");
             const swagger_config = clone(this.config.swagger);
             const routePrefix = swagger_config.routePrefix;
             delete swagger_config.routePrefix;
@@ -115,8 +115,8 @@ class MicroServiceNode {
                 exposeRoute: true,
                 refResolver: {
                     clone: true, // Clone the input schema without changing it. Default: false
-                    applicationUri: 'my-application.org', // You need to provide an unique URI to resolve relative `$id`s
-                    externalSchemas: schemas // The schemas provided at the creation of the resolver, will be used evvery time `.resolve` will be called
+                    applicationUri: 'my-application.org' // You need to provide an unique URI to resolve relative `$id`s
+                    //externalSchemas: schemas // The schemas provided at the creation of the resolver, will be used evvery time `.resolve` will be called
                 }
             });
             fastify.ready(err => {
@@ -132,7 +132,7 @@ class MicroServiceNode {
         }
         await Promise.all(serviceStartPromises);
         if (this.config.cors != null) {
-            fastify.register(require("fastify-cors"), this.config.cors);
+            fastify.register(require("@fastify/cors"), this.config.cors);
             this.log.info(`support cors on ${this.config.cors.origin}`);
             await fastify.after();
         }
@@ -199,7 +199,7 @@ class NodeService {
                         case "bearer":
                             const bearer_config = authentication_config[authType];
                             if (bearer_config == null) break;
-                            const bearerAuthPlugin = require('fastify-bearer-auth');
+                            const bearerAuthPlugin = require('@fastify/bearer-auth');
                             bearer_config["addHook"] = false; //so can be override by service
                             //register to service level fastify not root
                             fastifyServiceContext.register(bearerAuthPlugin, bearer_config);
@@ -221,7 +221,7 @@ class NodeService {
                             if (jwt_config.verify != null) {
                                 jwt_options.verify = jwt_config.verify;
                             }
-                            fastifyServiceContext.register(require("fastify-jwt"), jwt_options);
+                            fastifyServiceContext.register(require("@fastify/jwt"), jwt_options);
                             await fastifyServiceContext.after();//wait for register to complete first before add 
                             fastifyServiceContext.decorate("verifyJWT", async function (request, reply) {
                                 await request.jwtVerify();
@@ -233,7 +233,7 @@ class NodeService {
 
                 //register as hook so it affect while service (all routes below)
                 if (auth_verify_functions.length > 0) {
-                    fastifyServiceContext.register(require('fastify-auth'));
+                    fastifyServiceContext.register(require('@fastify/auth'));
                     await fastifyServiceContext.after();
                     fastifyServiceContext.addHook('preHandler', fastifyServiceContext.auth(auth_verify_functions))
                 }

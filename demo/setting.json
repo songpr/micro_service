@@ -27,7 +27,7 @@
                     "key": "${services_secondary_auth_key}"
                 }
             },
-            "active": true
+            "active": false
         }
     },
     "cors": {
@@ -39,23 +39,6 @@
             "keys": [
                 "${services_primary_auth_key}"
             ]
-        },
-        "jwt": {
-            "secret": {
-                "private_base64": "${private_key_base64}",
-                "public_base64": "${public_key_base64}"
-            },
-            "sign": {
-                "algorithm": "ES256",
-                "issuer": "api.demo.tld",
-                "expiresIn": "180s"
-            },
-            "verify": {
-                "issuer": "api.demo.tld",
-                "algorithms": [
-                    "ES256"
-                ]
-            }
         }
     },
     "fastify.options note": "specify fastify option here",
@@ -69,12 +52,6 @@
         }
     },
     "schema_note": "use_basic:true by default to use base-schema_for_route.json, supply other schemas in config with field name as prefix and value as schema file path. that will prefix with <field name>. e.g. { $ref:demo.api_response } ",
-    "schema": {
-        "use_basic": true,
-        "config": {
-            "demo": "/schema.json"
-        }
-    },
     "swagger_note": "Not recommend in production server",
     "swagger": {
         "routePrefix": "/doc",
@@ -82,13 +59,7 @@
             "title": "micro service demo apis",
             "description": "micro service demo apis' document",
             "version": "1.0"
-        },
-        "security": [
-            {
-                "type": "http",
-                "scheme": "basic"
-            }
-        ]
+        }
     },
     "logger_note": "pino log options for this node",
     "logger": {
