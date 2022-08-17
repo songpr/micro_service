@@ -31,7 +31,9 @@
         }
     },
     "cors": {
-        "origin": ["https://cc99-2405-9800-ba01-151b-2070-8a68-5a7-575.ngrok.io"]
+        "origin": [
+            "https://cc99-2405-9800-ba01-151b-2070-8a68-5a7-575.ngrok.io"
+        ]
     },
     "authentication_note": "node authentication, each property is a auth method order by setting. auth can be overrided by service authentication",
     "authentication": {
@@ -46,14 +48,13 @@
                 "public_base64": "${public_key_base64}"
             },
             "sign": {
-                "algorithm": "ES256",
-                "issuer": "api.demo.tld",
-                "expiresIn": "180s"
+                "algorithm": "ES512",
+                "iss": "api.demo.tld"
             },
             "verify": {
-                "issuer": "api.demo.tld",
+                "allowedIss": "api.demo.tld",
                 "algorithms": [
-                    "ES256"
+                    "ES512"
                 ]
             }
         }
@@ -82,13 +83,7 @@
             "title": "micro service demo apis",
             "description": "micro service demo apis' document",
             "version": "1.0"
-        },
-        "security": [
-            {
-                "type": "http",
-                "scheme": "basic"
-            }
-        ]
+        }
     },
     "logger_note": "pino log options for this node",
     "logger": {

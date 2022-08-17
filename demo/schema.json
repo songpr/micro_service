@@ -1,12 +1,14 @@
 {
     "$id": "demo",
-    "title":"demo schema",
-    "api_success": {
-        "type": "string",
-        "title": "api success"
-    },
-    "api_error": {
-        "type": "string",
-        "title": "api error"
+    "title": "demo schema",
+    "definitions": {
+        "api_success": {
+            "type": "string",
+            "title": "api success"
+        },
+        "api_error": {
+            "type": "string",
+            "title": "api error"
+        }
     }
 }

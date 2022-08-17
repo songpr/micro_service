@@ -8,10 +8,10 @@
                 "schema": {
                     "response": {
                         "200": {
-                            "$ref": "mservice-core#/api_success"
+                            "$ref": "mservice/core#/definitions/api_success"
                         },
                         "400": {
-                            "$ref": "mservice-core#/api_validate_error"
+                            "$ref": "mservice/core#/definitions/api_validate_error"
                         }
                     },
                     "body": {

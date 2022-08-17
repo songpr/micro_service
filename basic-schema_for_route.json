@@ -1,136 +1,138 @@
 {
-    "$id": "mservice-core",
+    "$id": "mservice/core",
     "description": "micro service core schema for basic usage",
     "title": "micro service basic schema",
-    "ids": {
-        "type": "string",
-        "pattern": "^\\d+(,\\d+){0,1000}$",
-        "title": "ids"
-    },
-    "eng_field_name": {
-        "type": "string",
-        "pattern": "^[a-zA-Z][a-zA-Z0-9_\\-]*[a-zA-Z0-9]$"
-    },
-    "thai-eng_field_name": {
-        "type": "string",
-        "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_\\-]*[a-zA-Z0-9ก-๙]$"
-    },
-    "thai-eng_name": {
-        "type": "string",
-        "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9 _\\-]+$",
-        "title": "thai-eng_name"
-    },
-    "thai-eng_value": {
-        "type": "string",
-        "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_\\-]+$"
-    },
-    "thai-eng_message": {
-        "type": "string",
-        "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9 _\\-!\\?]+$"
-    },
-    "thai-eng_search": {
-        "type": "string",
-        "pattern": "^[ก-ฮเ-ไ๑-๙a-zA-Z0-9_\\-!\\@][ก-๙a-zA-Z0-9_\\-!\\@]*$"
-    },
-    "thai-eng_json_value": {
-        "type": "string",
-        "pattern": "^[ก-๙a-zA-Z0-9&=_{}\\[\\],:%\\\"-]+$"
-    },
-    "datetime_string": {
-        "anyOf": [
-            {
-                "type": "string",
-                "pattern": "^([0-9]{4})-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9](:[0-5][0-9](\\.[0-9]{3})?)?$"
-            },
-            {
-                "type": "string",
-                "format": "date-time"
-            },
-            {
-                "type": "string",
-                "format": "date"
-            }
-        ]
-    },
-    "period": {
-        "type": "string",
-        "pattern": "^([0-9]{4})-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9](:[0-5][0-9](\\.[0-9]{3})?)?,([0-9]{4})-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9](:[0-5][0-9](\\.[0-9]{3})?)?$"
-    },
-    "api_success": {
-        "type": "object",
-        "properties": {
-            "statusCode": {
-                "type": "integer",
-                "minimum": 200,
-                "maximum": 200
-            },
-            "message": {
-                "type": "string"
-            },
-            "data": {
-                "anyOf": [
-                    {
-                        "type": "array"
-                    },
-                    {
-                        "type": "object",
-                        "description": "json response data if there is any",
-                        "additionalProperties": true
-                    },
-                    {
-                        "type": "null"
-                    }
-                ]
-            }
+    "definitions": {
+        "ids": {
+            "type": "string",
+            "pattern": "^\\d+(,\\d+){0,1000}$",
+            "title": "ids"
         },
-        "required": [
-            "statusCode"
-        ],
-        "title": "api success"
-    },
-    "api_error": {
-        "type": "object",
-        "properties": {
-            "statusCode": {
-                "type": "integer",
-                "minimum": 500,
-                "maximum": 500
-            },
-            "error": {
-                "type": "string"
-            },
-            "message": {
-                "type": "string"
-            }
+        "eng_field_name": {
+            "type": "string",
+            "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9]$"
         },
-        "required": [
-            "statusCode",
-            "message"
-        ],
-        "title": "api error"
-    },
-    "api_validate_error": {
-        "type": "object",
-        "properties": {
-            "statusCode": {
-                "type": "integer",
-                "minimum": 400,
-                "maximum": 400
-            },
-            "error": {
-                "type": "string",
-                "description": "failure code for check type of error, this will hardly change",
-                "pattern": "^[A-Z]{2,100}(_[A-Z0-9]{2,100}){0,10}$"
-            },
-            "message": {
-                "type": "string"
-            }
+        "thai-eng_field_name": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_-]*[a-zA-Z0-9ก-๙]$"
         },
-        "required": [
-            "statusCode",
-            "error",
-            "message"
-        ],
-        "title": "api validate error"
+        "thai-eng_name": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9 _-]+$",
+            "title": "thai-eng_name"
+        },
+        "thai-eng_value": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9_-]+$"
+        },
+        "thai-eng_message": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไa-zA-Z][ก-๙a-zA-Z0-9 _\\-!\\?]+$"
+        },
+        "thai-eng_search": {
+            "type": "string",
+            "pattern": "^[ก-ฮเ-ไ๑-๙a-zA-Z0-9_\\-!\\@][ก-๙a-zA-Z0-9_\\-!\\@]*$"
+        },
+        "thai-eng_json_value": {
+            "type": "string",
+            "pattern": "^[ก-๙a-zA-Z0-9&=_{}\\[\\],:%\\\"-]+$"
+        },
+        "datetime_string": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^([0-9]{4})-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9](:[0-5][0-9](\\.[0-9]{3})?)?$"
+                },
+                {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                {
+                    "type": "string",
+                    "format": "date"
+                }
+            ]
+        },
+        "period": {
+            "type": "string",
+            "pattern": "^([0-9]{4})-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9](:[0-5][0-9](\\.[0-9]{3})?)?,([0-9]{4})-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9](:[0-5][0-9](\\.[0-9]{3})?)?$"
+        },
+        "api_success": {
+            "type": "object",
+            "properties": {
+                "statusCode": {
+                    "type": "integer",
+                    "minimum": 200,
+                    "maximum": 200
+                },
+                "message": {
+                    "type": "string"
+                },
+                "data": {
+                    "anyOf": [
+                        {
+                            "type": "array"
+                        },
+                        {
+                            "type": "object",
+                            "description": "json response data if there is any",
+                            "additionalProperties": true
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "statusCode"
+            ],
+            "title": "api success"
+        },
+        "api_error": {
+            "type": "object",
+            "properties": {
+                "statusCode": {
+                    "type": "integer",
+                    "minimum": 500,
+                    "maximum": 500
+                },
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "statusCode",
+                "message"
+            ],
+            "title": "api error"
+        },
+        "api_validate_error": {
+            "type": "object",
+            "properties": {
+                "statusCode": {
+                    "type": "integer",
+                    "minimum": 400,
+                    "maximum": 400
+                },
+                "error": {
+                    "type": "string",
+                    "description": "failure code for check type of error, this will hardly change",
+                    "pattern": "^[A-Z]{2,100}(_[A-Z0-9]{2,100}){0,10}$"
+                },
+                "message": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "statusCode",
+                "error",
+                "message"
+            ],
+            "title": "api validate error"
+        }
     }
 }
