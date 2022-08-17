@@ -27,11 +27,13 @@
                     "key": "${services_secondary_auth_key}"
                 }
             },
-            "active": false
+            "active": true
         }
     },
     "cors": {
-        "origin": ["https://cc99-2405-9800-ba01-151b-2070-8a68-5a7-575.ngrok.io"]
+        "origin": [
+            "https://cc99-2405-9800-ba01-151b-2070-8a68-5a7-575.ngrok.io"
+        ]
     },
     "authentication_note": "node authentication, each property is a auth method order by setting. auth can be overrided by service authentication",
     "authentication": {
@@ -39,6 +41,22 @@
             "keys": [
                 "${services_primary_auth_key}"
             ]
+        },
+        "jwt": {
+            "secret": {
+                "private_base64": "${private_key_base64}",
+                "public_base64": "${public_key_base64}"
+            },
+            "sign": {
+                "algorithm": "ES512",
+                "iss": "api.demo.tld"
+            },
+            "verify": {
+                "allowedIss": "api.demo.tld",
+                "algorithms": [
+                    "ES512"
+                ]
+            }
         }
     },
     "fastify.options note": "specify fastify option here",

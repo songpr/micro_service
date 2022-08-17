@@ -147,7 +147,6 @@ class MicroServiceNode {
         }
     }
 }
-
 class NodeService {
     constructor(serviceName, config_object, servicePath) {
         const valid = nodeServiceOptionsSchemaValidate(config_object)

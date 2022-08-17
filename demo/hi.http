@@ -2,5 +2,5 @@ GET http://localhost:3000/home/
 
 
 ###
-GET http://localhost:3000/Home/าหหก
-Authorization: bearer xKb4WhdxbAGaz4LQqFzyWvwMhRmJ9hT3n8QN4QkudXZKXatve4T78VoPgEMX6xm3
+GET http://localhost:3000/Home/sSS
+Authorization: bearer eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFhYSIsImlzcyI6ImFwaS5kZW1vLnRsZCIsImlhdCI6MTY2MDcyODYyM30.APj8aKp5XmzII2xRgG7mq78e4g31aW-fQJMAZ5KwVZlLKCogAQ37mDt7GkRdH1d0Hcyrj5cIGCu1kQ95RZX5mCQcAKF10XFlE3mD97Jh1cBVAIT2kh285pep366Rx72VEcZsLIAty_tZl9iCioPuXeTL6iYAObZEK13wvg4hNlMgXOCv
