@@ -103,7 +103,7 @@ class MicroServiceNode {
             const swagger_config = clone(this.config.swagger);
             const routePrefix = swagger_config.routePrefix;
             delete swagger_config.routePrefix;
-            fastify.register(swagger, {
+            await fastify.register(swagger, {
                 routePrefix: routePrefix,
                 swagger: swagger_config,
                 exposeRoute: true
@@ -117,11 +117,13 @@ class MicroServiceNode {
         await fastify.after();
         for (const service of this.services) {
             this.log.debug({ start_service: service.config.service.baseURL });
-            await service.start(this.fastify, this.authentication_config, dbServices);
+            //clone authentication_config prevent change in config in service level
+            const authentication_config = JSON.parse(JSON.stringify(this.authentication_config));
+            await service.start(this.fastify, authentication_config, dbServices);
         }
         await Promise.all(serviceStartPromises);
         if (this.config.cors != null) {
-            fastify.register(require("@fastify/cors"), this.config.cors);
+            await fastify.register(require("@fastify/cors"), this.config.cors);
             this.log.info(`support cors on ${this.config.cors.origin}`);
             await fastify.after();
         }
@@ -176,7 +178,7 @@ class NodeService {
         const databaseService = dbServices;
         const error = {};
 
-        fastify.register(async (fastifyServiceContext) => {
+        await fastify.register(async (fastifyServiceContext) => {
             try {
                 const service_handler_config = JSON.parse(JSON.stringify(serviceInstance.config)); //copy config
                 //merge both, same auth will be replaced by service level
@@ -190,7 +192,7 @@ class NodeService {
                             const bearerAuthPlugin = require('@fastify/bearer-auth');
                             bearer_config["addHook"] = false; //so can be override by service
                             //register to service level fastify not root
-                            fastifyServiceContext.register(bearerAuthPlugin, bearer_config);
+                            await fastifyServiceContext.register(bearerAuthPlugin, bearer_config);
                             await fastifyServiceContext.after();//wait for register to complete first before add 
                             auth_verify_functions.push(fastifyServiceContext.verifyBearerAuth);
                             break;
@@ -209,7 +211,7 @@ class NodeService {
                             if (jwt_config.verify != null) {
                                 jwt_options.verify = jwt_config.verify;
                             }
-                            fastifyServiceContext.register(require("@fastify/jwt"), jwt_options);
+                            await fastifyServiceContext.register(require("@fastify/jwt"), jwt_options);
                             await fastifyServiceContext.after();//wait for register to complete first before add 
                             fastifyServiceContext.decorate("verifyJWT", async function (request, reply) {
                                 await request.jwtVerify();
