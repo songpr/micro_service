@@ -24,7 +24,18 @@
             "url": "http://localhost",
             "authentication": {
                 "bearer": {
-                    "key": "${services_secondary_auth_key}"
+                    "key": "${services_primary_auth_key}"
+                }
+            },
+            "active": true
+        },
+        "line": {
+            "note": "line service for getting profile",
+            "config": "/line/setting.json",
+            "url": "http://localhost",
+            "authentication": {
+                "bearer": {
+                    "key": "${services_primary_auth_key}"
                 }
             },
             "active": true
@@ -35,7 +46,7 @@
             "https://cc99-2405-9800-ba01-151b-2070-8a68-5a7-575.ngrok.io"
         ]
     },
-    "authentication_note": "node authentication, each property is a auth method order by setting. auth can be overrided by service authentication",
+    "authentication_note": "node authentication, each property is a auth method order by setting. auth can be overrided by service authentication which will be replace the whole authentication subtype e.g. bearer will replace node keys with service level keys",
     "authentication": {
         "bearer": {
             "keys": [
