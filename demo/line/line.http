@@ -1,0 +1,4 @@
+GET {{baseurl}}/Line/token
+Authorization: Bearer {{line_an_id_token}}
+Content-Type: application/json
+
