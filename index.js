@@ -183,6 +183,7 @@ class NodeService {
                 const service_handler_config = JSON.parse(JSON.stringify(serviceInstance.config)); //copy config
                 //merge both, same auth will be replaced by service level
                 const authentication_config = { ...(node_authentication_config != null ? node_authentication_config : {}), ...service_handler_config.service.authentication != null ? service_handler_config.service.authentication : {} };
+                console.log(authentication_config)
                 const auth_verify_functions = [];
                 for (const authType of Object.keys(authentication_config)) {
                     switch (authType) {
@@ -199,12 +200,30 @@ class NodeService {
                         case "jwt":
                             const jwt_config = authentication_config[authType];
                             if (jwt_config == null) break;
-                            const jwt_options = {
-                                secret: {
+                            if (jwt_config.secret == null) {
+                                throw new Error("for jwt, secret option is required")
+                            }
+                            const jwt_options = {};
+                            if (jwt_config.secret.jwks != null) {
+                                const buildGetJwks = require('get-jwks');
+                                const domain = jwt_config.secret.jwks.domain;
+                                const getJwks = buildGetJwks({
+                                    ttl: 60 * 60 * 1000,
+                                    allowedDomains: [jwt_config.secret.jwks.domain],
+                                    jwksPath: jwt_config.secret.jwks.jwksPath
+                                })
+                                jwt_options.decode = { complete: true };
+                                jwt_options.secret = (request, token) => {
+                                    const { header: { kid, alg } } = token;
+                                    return getJwks.getPublicKey({ kid, domain, alg });
+                                }
+                            } else {
+                                jwt_options.secret = {
                                     private: Buffer.from(jwt_config.secret.private_base64, 'base64').toString('utf8'),
                                     public: Buffer.from(jwt_config.secret.public_base64, 'base64').toString('utf8')
                                 }
                             }
+
                             if (jwt_config.sign != null) {
                                 jwt_options.sign = jwt_config.sign;
                             }

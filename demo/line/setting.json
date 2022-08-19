@@ -1,0 +1,51 @@
+{
+    "service": {
+        "baseURL": "Line",
+        "routes": [
+            {
+                "method": "GET",
+                "url": "/token",
+                "schema": {
+                    "response": {
+                        "200": {
+                            "$ref": "mservice/core#/definitions/api_success"
+                        },
+                        "400": {
+                            "$ref": "mservice/core#/definitions/api_validate_error"
+                        }
+                    }
+                },
+                "handler": {
+                    "file": "line_handler.js",
+                    "function": "getProfile"
+                },
+                "logLevel": "debug"
+            }
+        ],
+        "logger": {
+            "level": "debug"
+        },
+        "authentication": {
+            "bearer": {
+                "keys": [
+                    "${services_primary_auth_key}"
+                ]
+            },
+            "jwt": {
+                "secret": {
+                    "jwks": {
+                        "domain": "https://api.line.me",
+                        "jwksPath": "/oauth2/v2.1/certs"
+                    }
+                },
+                "verify": {
+                    "algorithms": "ES256",
+                    "allowedIss": "https://access.line.me",
+                    "allowedAud": "${line_channel_id}",
+                    "cache": 1000,
+                    "clockTolerance": 31536000000
+                }
+            }
+        }
+    }
+}
