@@ -178,7 +178,7 @@ class NodeService {
         const databaseService = dbServices;
         const error = {};
 
-        await fastify.register(async (fastifyServiceContext) => {
+        await fastify.register(async (fastifyServiceContext, options, done) => {
             try {
                 const service_handler_config = JSON.parse(JSON.stringify(serviceInstance.config)); //copy config
                 //merge both, same auth will be replaced by service level
@@ -274,6 +274,7 @@ class NodeService {
                 serviceInstance.log.error({ error: `error while in fastify register`, stack: fastifyRegisterError.stack });
                 error.fastifyRegisterError = fastifyRegisterError;
             }
+            done()
         });
         await fastify.after(); //make sure all plug in loaded after register
         if (error.fastifyRegisterError) throw error.fastifyRegisterError;
